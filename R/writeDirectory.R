@@ -123,7 +123,7 @@ writeDirectory <- function(base_dir,
     if (!is.null(df)) {
       # Print progress
       progress_count <- f
-      cat(paste0("...Folder [", progress_count, "/", n_folders, "]: ", basename(folder), "\n"))
+      cat(paste0("... Folder [", progress_count, "/", n_folders, "]: ", basename(folder), "\n"))
       # Sheet
       sheet_name <- make.names(path_file(folder))
       sheet_name <- substr(sheet_name, 1, 31)

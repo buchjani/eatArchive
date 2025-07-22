@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_metadata.R
 \name{write_metadata}
 \alias{write_metadata}
-\title{Scan}
+\title{Write metadata summary of a directory to an Excel file}
 \usage{
 write_metadata(
   base_dir,
@@ -12,12 +12,49 @@ write_metadata(
 )
 }
 \arguments{
-\item{base_dir}{Path to directory that is to be scanned}
+\item{base_dir}{Character. Path to the base directory to be scanned.}
 
-\item{output_file}{Path and filename of}
+\item{output_file}{Character. Path to the Excel file to be created.}
 
-\item{exclude_folders}{}
+\item{autofill_values}{Optional character vector. If provided, these values will be inserted
+into the "Archive" column as autofill rows beneath the header row in each sheet. Each
+value becomes one row.}
+
+\item{exclude_folders}{Character vector. Names of folders to exclude (e.g., "_Archive").
+Defaults to \code{c("_Archive")}. Set to \code{NULL} or \code{character(0)} to include all folders.}
+}
+\value{
+Invisibly returns the workbook object (from the \pkg{openxlsx} package),
+and creates the Excel file as a side effect.
 }
 \description{
-Scan
+Recursively scans a directory and writes file metadata (name, size, last modification time)
+into an Excel workbook. Each top-level folder becomes a separate sheet, and an optional
+"toplevel" sheet lists files directly in the base directory.
+}
+\details{
+Optionally, the function can add custom autofill rows to each sheet (e.g., for later
+manual input), and exclude files from specific subfolders (e.g., "_Archive") from the output.
+
+The Excel output includes:
+\itemize{
+\item One sheet per top-level subdirectory (recursively listing files within)
+\item An optional "toplevel" sheet with files directly in the base directory
+\item Column widths and light styling for readability
+\item Optional autofill rows below the header in each sheet (for later manual tagging or categorization)
+}
+
+Files located in any folder (or subfolder) whose name matches one of the entries in
+\code{exclude_folders} will be excluded.
+}
+\examples{
+\dontrun{
+write_metadata("my_project/", "metadata_summary.xlsx")
+write_metadata("my_project/", "summary.xlsx", autofill_values = c("keep", "delete"))
+write_metadata("my_project/", "summary.xlsx", exclude_folders = NULL)  # include all
+}
+
+}
+\seealso{
+\code{\link[openxlsx]{createWorkbook}}, \code{\link[fs]{dir_ls}}, \code{\link[base]{file.info}}
 }

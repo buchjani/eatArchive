@@ -1,15 +1,45 @@
-#' Scan
+#' Write metadata summary of a directory to an Excel file
 #'
-#' @param base_dir Path to directory that is to be scanned
-#' @param output_file Path and filename of
-#' @param autofill_values
-#' @param exclude_folders
+#' Recursively scans a directory and writes file metadata (name, size, last modification time)
+#' into an Excel workbook. Each top-level folder becomes a separate sheet, and an optional
+#' "toplevel" sheet lists files directly in the base directory.
 #'
-#' @returns
-#' @export
+#' Optionally, the function can add custom autofill rows to each sheet (e.g., for later
+#' manual input), and exclude files from specific subfolders (e.g., "_Archive") from the output.
+#'
+#' @param base_dir Character. Path to the base directory to be scanned.
+#' @param output_file Character. Path to the Excel file to be created.
+#' @param autofill_values Optional character vector. If provided, these values will be inserted
+#'        into the "Archive" column as autofill rows beneath the header row in each sheet. Each
+#'        value becomes one row.
+#' @param exclude_folders Character vector. Names of folders to exclude (e.g., "_Archive").
+#'        Defaults to \code{c("_Archive")}. Set to \code{NULL} or \code{character(0)} to include all folders.
+#'
+#' @return Invisibly returns the workbook object (from the \pkg{openxlsx} package),
+#'         and creates the Excel file as a side effect.
+#'
+#' @details
+#' The Excel output includes:
+#' \itemize{
+#'   \item One sheet per top-level subdirectory (recursively listing files within)
+#'   \item An optional "toplevel" sheet with files directly in the base directory
+#'   \item Column widths and light styling for readability
+#'   \item Optional autofill rows below the header in each sheet (for later manual tagging or categorization)
+#' }
+#'
+#' Files located in any folder (or subfolder) whose name matches one of the entries in
+#' \code{exclude_folders} will be excluded.
+#'
+#' @seealso \code{\link[openxlsx]{createWorkbook}}, \code{\link[fs]{dir_ls}}, \code{\link[base]{file.info}}
 #'
 #' @examples
-
+#' \dontrun{
+#' write_metadata("my_project/", "metadata_summary.xlsx")
+#' write_metadata("my_project/", "summary.xlsx", autofill_values = c("keep", "delete"))
+#' write_metadata("my_project/", "summary.xlsx", exclude_folders = NULL)  # include all
+#' }
+#'
+#' @export
 
 write_metadata <- function(base_dir,
                            output_file,

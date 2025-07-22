@@ -1,7 +1,7 @@
-#' Title
+#' Scan
 #'
-#' @param base_dir
-#' @param output_file
+#' @param base_dir Path to directory that is to be scanned
+#' @param output_file Path and filename of
 #' @param autofill_values
 #' @param exclude_folders
 #'
@@ -11,7 +11,7 @@
 #' @examples
 
 
-writeDirectory <- function(base_dir,
+write_metadata <- function(base_dir,
                            output_file,
                            autofill_values = NULL,
                            exclude_folders = c("_Archive")) {

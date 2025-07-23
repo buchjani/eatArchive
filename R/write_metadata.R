@@ -83,7 +83,7 @@ write_metadata <- function(base_dir,
 
     # Insert autofill values (if provided)
     if (!is.null(autofill_values)) {
-      autofill_df <- tibble::tibble(
+      autofill_df <- data.frame(
         File_Name = rep(NA, length(autofill_values)),
         Size_Bytes = rep(NA, length(autofill_values)),
         Last_Modified = rep(NA, length(autofill_values)),

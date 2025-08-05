@@ -1,35 +1,33 @@
-add_sheet_with_style <- function(wb, sheet_name, df, autofill_values) {
-
+add_sheet_with_style <- function(wb, sheet_name, df, autofill_values = NULL) {
   openxlsx::addWorksheet(wb, sheet_name)
 
-  # Add "Archive"-column
-  df$Archive <- NA
+  # Handle Archive column and optional autofill rows
+  add_archive_col <- !is.null(autofill_values)  # TRUE for NA or character
+  add_autofill_rows <- is.character(autofill_values)
 
-  # Insert autofill values (if provided)
-  if (!is.null(autofill_values)) {
-    autofill_df <- data.frame(
-      File_Name = rep(NA, length(autofill_values)),
-      Size_Bytes = rep(NA, length(autofill_values)),
-      Last_Modified = rep(NA, length(autofill_values)),
-      Archive = autofill_values
-    )
+  if (add_archive_col && !"Archive" %in% names(df)) {
+    df$Archive <- NA
+  }
+
+  if (add_autofill_rows) {
+    autofill_df <- as.data.frame(matrix(NA, nrow = length(autofill_values), ncol = ncol(df)))
+    names(autofill_df) <- names(df)
+    autofill_df$Archive <- autofill_values
     df <- rbind(autofill_df, df)
   }
+
+  # Fix time format
   df$Last_Modified <- as.POSIXct(df$Last_Modified)
 
-  # Write table
-  openxlsx::writeDataTable(wb, sheet = sheet_name, x = df, withFilter = TRUE)
+  # Add the data table to openxlsx object
+  openxlsx::writeData(wb, sheet = sheet_name, x = df, startRow = 1, withFilter = TRUE)
 
-  # Set column widths and row heights (hidden rows)
-  openxlsx::setColWidths(wb, sheet = sheet_name, cols = 1, widths = 65)  # File name
-  openxlsx::setColWidths(wb, sheet = sheet_name, cols = 3, widths = 25)  # Last modified
-  openxlsx::setColWidths(wb, sheet = sheet_name, cols = 4, widths = 20)  # Archive
-  openxlsx::setRowHeights(wb, sheet = sheet_name, rows = 2:(length(autofill_values)+1), heights = 0)
-
-  #  Format column 'Last_Modified' as date/time
-  dateStyle <- openxlsx::createStyle(numFmt = "yyyy-mm-dd hh:mm:ss")
-  openxlsx::addStyle(wb, sheet = sheet_name, style = dateStyle,
-                     cols = 3, rows = 2:(nrow(df) + 1), gridExpand = TRUE, stack = TRUE)
+  # Hide autofill rows, if any
+  # Note: Using height = 1 (not 0) was neccessary for Excel filters/autocompletet to work
+  if (is.character(autofill_values)) {
+    autofill_rows <- 2:(1 + length(autofill_values))
+    openxlsx::setRowHeights(wb, sheet = sheet_name, rows = autofill_rows, heights = 1)
+  }
 
   # Header
   headerStyle <- openxlsx::createStyle(fontSize = 12, fontColour = "#FFFFFF", halign = "left",
@@ -38,12 +36,22 @@ add_sheet_with_style <- function(wb, sheet_name, df, autofill_values) {
                      gridExpand = TRUE, stack = TRUE)
   openxlsx::freezePane(wb, sheet = sheet_name, firstRow = TRUE)
 
-  # remove default lines between rows
+  # Set column widths and styles
+  openxlsx::setColWidths(wb, sheet = sheet_name, cols = 1, widths = "auto")  # File name
+  openxlsx::setColWidths(wb, sheet = sheet_name, cols = 2, widths = 10)      # File name
+  openxlsx::setColWidths(wb, sheet = sheet_name, cols = 3, widths = 20)      # Last modified
+
+  # Format column 'Last_Modified' as date/time
+  dateStyle <- openxlsx::createStyle(numFmt = "yyyy-mm-dd hh:mm:ss")
+  openxlsx::addStyle(wb, sheet = sheet_name, style = dateStyle,
+                     cols = 3, rows = 2:(nrow(df) + 1), gridExpand = TRUE, stack = TRUE)
+
+  # Remove default lines between rows
   openxlsx::addStyle(wb, sheet = sheet_name, cols = 1: ncol(df), rows = 2:nrow(df), gridExpand = TRUE, stack = TRUE,
                      style = openxlsx::createStyle(border = "TopBottom", borderColour = 'lightgrey'))
 
-  # Vertical lines
-  openxlsx::addStyle(wb, sheet = sheet_name, cols = 1: ncol(df), rows = 2:nrow(df)+1, gridExpand = TRUE, stack = TRUE,
+  # Draw vertical lines
+  openxlsx::addStyle(wb, sheet = sheet_name, cols = 1: ncol(df), rows = 2:(nrow(df)+1), gridExpand = TRUE, stack = TRUE,
                      style = openxlsx::createStyle(border = "LeftRight", borderColour = "#821123"))
 
   # Draw line when folder changes

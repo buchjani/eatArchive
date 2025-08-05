@@ -1,97 +1,91 @@
-#' Write metadata summary of a directory to an Excel file
+#' Create an Excel workbook with metadata for all subfolders of a directory
 #'
-#' Recursively scans a directory and writes file metadata (name, size, last modification time)
-#' into an Excel workbook. Each top-level folder becomes a separate sheet, and an optional
-#' "toplevel" sheet lists files directly in the base directory.
+#' Scans each immediate subfolder of the specified directory (excluding any listed in `exclude_folders`)
+#' and writes an Excel file containing file-level metadata. Each subfolder gets its own sheet, listing
+#' all files (recursively) with their name, size, and last modified timestamp.\cr \cr
+#' Optionally, an additional column named "Archive" is included in each sheet. The values of "Archive"
+#' will later be used by `create_archive()` to indicate the destination folder for copying or converting files.
 #'
-#' Optionally, the function can add custom autofill rows to each sheet (e.g., for later
-#' manual input), and exclude files from specific subfolders (e.g., "_Archive") from the output.
-#'
-#' @param base_dir Character. Path to the base directory to be scanned.
-#' @param output_file Character. Path to the Excel file to be created.
-#' @param autofill_values Optional character vector. If provided, these values will be inserted
-#'        into the "Archive" column as autofill rows beneath the header row in each sheet. Each
-#'        value becomes one row.
-#' @param exclude_folders Character vector. Names of folders to exclude (e.g., "_Archive").
-#'        Defaults to \code{c("_Archive")}. Set to \code{NULL} or \code{character(0)} to include all folders.
-#'
-#' @return Invisibly returns the workbook object (from the \pkg{openxlsx} package),
-#'         and creates the Excel file as a side effect.
+#' @param dir Character. Path to the directory whose immediate subfolders should be scanned.
+#' @param output_file Character. Path to the Excel file to be written (e.g., "metadata.xlsx").
+#' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
+#' @param autofill_values Optional. Controls whether and how the "Archive" column is included and pre-filled:
+#'   - If `NULL`, the "Archive" column is not included.
+#'   - If `NA`, a column "Archive" is included but autocomplete and filtering in Excel will not be available.
+#'   - If a character vector is provided, the values are added to enable autocomplete and filtering in Excel,
+#'     making it easier to assign target folders for file archiving.
 #'
 #' @details
-#' The Excel output includes:
+#' The Excel workbook includes:
 #' \itemize{
-#'   \item One sheet per top-level subdirectory (recursively listing files within)
-#'   \item An optional "toplevel" sheet with files directly in the base directory
-#'   \item Column widths and light styling for readability
-#'   \item Optional autofill rows below the header in each sheet (for later manual tagging or categorization)
+#'   \item One sheet per immediate subfolder of the specified directory
+#'   \item Each sheet contains a recursive listing of all files in that subfolder (including sub-subfolders)
+#'   \item Optional autofill rows inserted directly below the header (e.g., for manual annotation)
+#'   \item Column widths and light styling for improved readability
 #' }
 #'
-#' Files located in any folder (or subfolder) whose name matches one of the entries in
-#' \code{exclude_folders} will be excluded.
+#' Files located in any subfolder whose name matches one of the entries in
+#' \code{exclude_folders} will be excluded entirely (i.e., they are not scanned or listed).
+#'
+#' This function is intended as part of a file management workflow in which files may later be
+#' reviewed, copied, or converted based on the generated metadata file.
+#'
+#' @return Invisibly returns the path to the written Excel file.
 #'
 #' @seealso \code{\link[openxlsx]{createWorkbook}}, \code{\link[fs]{dir_ls}}, \code{\link[base]{file.info}}
 #'
 #' @examples
 #' \dontrun{
+#' # Write metadata for all subfolders of "my_project/"
 #' write_metadata("my_project/", "metadata_summary.xlsx")
-#' write_metadata("my_project/", "summary.xlsx", autofill_values = c("keep", "delete"))
-#' write_metadata("my_project/", "summary.xlsx", exclude_folders = NULL)  # include all
+#'
+#' # Include an autofill row with values for later tagging
+#' write_metadata("my_project/", "summary.xlsx", autofill_values = c("keep", "archive"))
+#'
+#' # Include all subfolders (do not exclude any)
+#' write_metadata("my_project/", "summary.xlsx", exclude_folders = NULL)
 #' }
 #'
 #' @export
 
-write_metadata <- function(base_dir,
+write_metadata <- function(dir,
                            output_file,
-                           autofill_values = NULL,
-                           exclude_folders = c("_Archive")) {
-  # ----------------
-  # HELPER FUNCTIONS
-  # ----------------
-
-  # helper function to get file info from folder
-
-
-  # function for formatting & styling
-
-
-  # -----------
-  #  WRITE FILE
-  # -----------
+                           exclude_folders = "_Archive",
+                           autofill_values = NA
+                           ) {
 
   # Write message in console
-  cat(paste0("Scanning base directory: ", "\n", base_dir, "\n", "\n"))
-
-  # Show progress
-  n_folders <- length(fs::dir_ls(base_dir, type = "directory", recurse = FALSE))
-  n_folders <- n_folders - sum(exclude_folders %in% dir(base_dir))
-
+  cat(paste0("Scanning base directory: ", "\n", dir, "\n", "\n"))
 
   # Create workbook
   wb <- openxlsx::createWorkbook()
 
-  # Dataframe of files in Top-level folder
-  df_baseDir <- get_file_info(dir = base_dir, recursive = FALSE, exclude_folders = exclude_folders)
+  # Toplevel files (non-recursive)
+  toplevel_df <- get_file_info(dir = dir, recursive = FALSE)
+  toplevel_name <- basename(normalizePath(dir))
+  if (!is.null(toplevel_df)) {
+    add_sheet_with_style(wb, sheet_name = toplevel_name, df = toplevel_df, autofill_values = autofill_values)
+  }
 
-  # Dataframe of files for each subdirectory
-  subDirs <- fs::dir_ls(base_dir, type = "directory", recurse = FALSE)
-  for (f in 1:length(subDirs)) {
-    folder <- subDirs[f]
-    df <- get_file_info(folder, recursive = TRUE, exclude_folders = exclude_folders)
+  # Files in subfolders (one sheet per subfolder)
+  subfolders <- fs::dir_ls(dir, type = "directory", recurse = FALSE)
+  subfolders <- subfolders[!fs::path_file(subfolders) %in% exclude_folders]
+
+  for (f in 1:length(subfolders)) {
+    folder <- subfolders[f]
+    df <- get_file_info(dir = folder, recursive = TRUE)
     if (!is.null(df)) {
       # Print progress
-      progress_count <- f
-      cat(paste0("... Folder [", progress_count, "/", n_folders, "]: ", basename(folder), "\n"))
-      # Sheet
+      cat(paste0("... Folder [", f, "/", length(subfolders), "]: ", basename(folder), " - ", "\n"))
+      # Make sheet
       sheet_name <- make.names(fs::path_file(folder))
       sheet_name <- substr(sheet_name, 1, 31)
-      add_sheet_with_style(wb, sheet_name, df, autofill_values)
+      add_sheet_with_style(wb, sheet_name = sheet_name, df = df, autofill_values = autofill_values)
     }
   }
 
-  # Save workbook, write message
-  cat("\nWriting file report to:\n")
-  openxlsx::saveWorkbook(wb, output_file, overwrite = TRUE)
+  # Save the final workbook, write message
+  cat("\nWriting metadata report to:\n")
   cat(output_file)
-
+  openxlsx::saveWorkbook(wb, output_file, overwrite = TRUE)
 }

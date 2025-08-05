@@ -2,56 +2,65 @@
 % Please edit documentation in R/write_metadata.R
 \name{write_metadata}
 \alias{write_metadata}
-\title{Write metadata summary of a directory to an Excel file}
+\title{Create an Excel workbook with metadata for all subfolders of a directory}
 \usage{
 write_metadata(
-  base_dir,
+  dir,
   output_file,
-  autofill_values = NULL,
-  exclude_folders = c("_Archive")
+  exclude_folders = "_Archive",
+  autofill_values = NA
 )
 }
 \arguments{
-\item{base_dir}{Character. Path to the base directory to be scanned.}
+\item{dir}{Character. Path to the directory whose immediate subfolders should be scanned.}
 
-\item{output_file}{Character. Path to the Excel file to be created.}
+\item{output_file}{Character. Path to the Excel file to be written (e.g., "metadata.xlsx").}
 
-\item{autofill_values}{Optional character vector. If provided, these values will be inserted
-into the "Archive" column as autofill rows beneath the header row in each sheet. Each
-value becomes one row.}
+\item{exclude_folders}{Character vector. Names of subfolders to exclude from processing.}
 
-\item{exclude_folders}{Character vector. Names of folders to exclude (e.g., "_Archive").
-Defaults to \code{c("_Archive")}. Set to \code{NULL} or \code{character(0)} to include all folders.}
+\item{autofill_values}{Optional. Controls whether and how the "Archive" column is included and pre-filled:
+\itemize{
+\item If \code{NULL}, the "Archive" column is not included.
+\item If \code{NA}, a column "Archive" is included but autocomplete and filtering in Excel will not be available.
+\item If a character vector is provided, the values are added to enable autocomplete and filtering in Excel,
+making it easier to assign target folders for file archiving.
+}}
 }
 \value{
-Invisibly returns the workbook object (from the \pkg{openxlsx} package),
-and creates the Excel file as a side effect.
+Invisibly returns the path to the written Excel file.
 }
 \description{
-Recursively scans a directory and writes file metadata (name, size, last modification time)
-into an Excel workbook. Each top-level folder becomes a separate sheet, and an optional
-"toplevel" sheet lists files directly in the base directory.
+Scans each immediate subfolder of the specified directory (excluding any listed in \code{exclude_folders})
+and writes an Excel file containing file-level metadata. Each subfolder gets its own sheet, listing
+all files (recursively) with their name, size, and last modified timestamp.\cr \cr
+Optionally, an additional column named "Archive" is included in each sheet. The values of "Archive"
+will later be used by \code{create_archive()} to indicate the destination folder for copying or converting files.
 }
 \details{
-Optionally, the function can add custom autofill rows to each sheet (e.g., for later
-manual input), and exclude files from specific subfolders (e.g., "_Archive") from the output.
-
-The Excel output includes:
+The Excel workbook includes:
 \itemize{
-\item One sheet per top-level subdirectory (recursively listing files within)
-\item An optional "toplevel" sheet with files directly in the base directory
-\item Column widths and light styling for readability
-\item Optional autofill rows below the header in each sheet (for later manual tagging or categorization)
+\item One sheet per immediate subfolder of the specified directory
+\item Each sheet contains a recursive listing of all files in that subfolder (including sub-subfolders)
+\item Optional autofill rows inserted directly below the header (e.g., for manual annotation)
+\item Column widths and light styling for improved readability
 }
 
-Files located in any folder (or subfolder) whose name matches one of the entries in
-\code{exclude_folders} will be excluded.
+Files located in any subfolder whose name matches one of the entries in
+\code{exclude_folders} will be excluded entirely (i.e., they are not scanned or listed).
+
+This function is intended as part of a file management workflow in which files may later be
+reviewed, copied, or converted based on the generated metadata file.
 }
 \examples{
 \dontrun{
+# Write metadata for all subfolders of "my_project/"
 write_metadata("my_project/", "metadata_summary.xlsx")
-write_metadata("my_project/", "summary.xlsx", autofill_values = c("keep", "delete"))
-write_metadata("my_project/", "summary.xlsx", exclude_folders = NULL)  # include all
+
+# Include an autofill row with values for later tagging
+write_metadata("my_project/", "summary.xlsx", autofill_values = c("keep", "archive"))
+
+# Include all subfolders (do not exclude any)
+write_metadata("my_project/", "summary.xlsx", exclude_folders = NULL)
 }
 
 }

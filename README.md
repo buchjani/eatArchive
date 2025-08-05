@@ -5,22 +5,28 @@
 
 <!-- badges: start -->
 
+[![Project Status: Active - The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/eatArchive?color=green)](https://cran.r-project.org/package=eatArchive)
+[![](https://img.shields.io/github/last-commit/buchjani/eatArchive.svg)](https://github.com/buchjani/eatArchive/commits/master)
+[![](https://img.shields.io/github/languages/code-size/buchjani/eatArchive.svg)](https://github.com/buchjani/eatArchive)
+[![](https://img.shields.io/badge/latest%20addition-IQB%20Methods%20eat--family-maroon.svg)](https://iqb-research.github.io/IQB-Methods/)
 <!-- badges: end -->
 
-The goal of eatArchive is to automate the archiving of directory
-contents using open, software-agnostic file formats. The package
-supports scanning nested directories, copying files into a new folder
-structure, and converting selected formats (e.g., XLSX to CSV, DOCX to
-PDF/A). Each step is documented in a machine-readable log (CSV),
-containing the source paths, destination paths, and any format
-conversions applied.
+eatArchive helps you automate the archiving of directory contents using
+open, software-agnostic file formats. The package supports scanning
+nested directories, copying files into a new folder structure, and
+converting selected formats (e.g., XLSX to CSV, DOCX to PDF/A). Each
+step is documented in a machine-readable CSV log that records source
+paths, destination paths, and any format conversions applied.
 
 ## Installation
 
-You can install the development version of eatArchive like so:
+You can install the development version of eatArchive from Github with
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+remotes::install_github("buchjani/eatArchive")
 ```
 
 ## Workflow
@@ -36,25 +42,8 @@ major steps:
     and converting files from the original directory to the archival
     directory
 
-<figure id="id">
-<img src="./man/figures/README-workflow.png" class="class" width="900"
-alt="eatArchive-workflow" />
-<figcaption aria-hidden="true">eatArchive-workflow</figcaption>
-</figure>
+<img src="./man/figures/README-workflow.png" id="id" class="class"
+width="900" />
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+Please note: `create_archive()` is currently under construction but will
+be available soon.

@@ -86,6 +86,7 @@ write_metadata <- function(dir,
     df <- get_file_info(dir = folder, recursive = TRUE)
     if (!is.null(df) && nrow(df) > 0) {
       sheet_name <- make.names(fs::path_file(folder))
+      sheet_name <- ifelse(substr(sheet_name, 1,1)=="X" & substr(fs::path_file(folder), 1, 1) != "X", gsub('^X', '', sheet_name), sheet_name)
       sheet_name <- substr(sheet_name, 1, 31)
       add_sheet_with_style(wb, sheet_name = sheet_name, df = df, autofill_values = autofill_values)
     } else if (is.null(df) || nrow(df) == 0) {

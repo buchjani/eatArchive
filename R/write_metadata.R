@@ -63,8 +63,13 @@ write_metadata <- function(dir,
   # Toplevel files (non-recursive)
   toplevel_df <- get_file_info(dir = dir, recursive = FALSE)
   toplevel_name <- basename(normalizePath(dir))
-  if (!is.null(toplevel_df)) {
+
+  if (!is.null(toplevel_df) && nrow(toplevel_df) > 0) {
     add_sheet_with_style(wb, sheet_name = toplevel_name, df = toplevel_df, autofill_values = autofill_values)
+  } else if (is.null(toplevel_df) || nrow(toplevel_df) == 0) {
+    toplevel_df <- data.frame("Info:" = paste0("Folder '", toplevel_name, "' contains no files."), stringsAsFactors = FALSE)
+    openxlsx::addWorksheet(wb, toplevel_name)
+    openxlsx::writeData(wb, sheet = toplevel_name, x = toplevel_df, startRow = 1, withFilter = F)
   }
 
   # Files in subfolders (one sheet per subfolder)
@@ -73,14 +78,20 @@ write_metadata <- function(dir,
 
   for (f in 1:length(subfolders)) {
     folder <- subfolders[f]
+    folder_name <- basename(normalizePath(folder))
+
+    # Print progress
+    cat(paste0("... Folder [", f, "/", length(subfolders), "]: ", basename(folder), "\n"))
+
     df <- get_file_info(dir = folder, recursive = TRUE)
-    if (!is.null(df)) {
-      # Print progress
-      cat(paste0("... Folder [", f, "/", length(subfolders), "]: ", basename(folder), " - ", "\n"))
-      # Make sheet
+    if (!is.null(df) && nrow(df) > 0) {
       sheet_name <- make.names(fs::path_file(folder))
       sheet_name <- substr(sheet_name, 1, 31)
       add_sheet_with_style(wb, sheet_name = sheet_name, df = df, autofill_values = autofill_values)
+    } else if (is.null(df) || nrow(df) == 0) {
+      df <- data.frame("Info" = paste0("Folder '", folder_name, "' contains no files."), stringsAsFactors = FALSE)
+      openxlsx::addWorksheet(wb, basename(normalizePath(folder)))
+      openxlsx::writeData(wb, sheet = folder_name, x = df, startRow = 1, withFilter = F)
     }
   }
 

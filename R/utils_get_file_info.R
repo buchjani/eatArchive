@@ -1,4 +1,11 @@
-get_file_info <- function(dir, recursive = FALSE) {
+#' Scan directory and write table of file names and info
+#'
+#' @param dir
+#' @param recursive
+#'
+#' @keywords internal
+
+.get_file_info <- function(dir, recursive = FALSE) {
   # Get all files (not directories)
   paths <- fs::dir_ls(dir, recurse = recursive, type = "file")
 

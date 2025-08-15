@@ -1,4 +1,13 @@
-add_sheet_with_style <- function(wb, sheet_name, df, autofill_values = NULL) {
+#' Format the excel sheet
+#'
+#' @param wb
+#' @param sheet_name
+#' @param df
+#' @param autofill_values
+#'
+#' @keywords internal
+
+.add_sheet_with_style <- function(wb, sheet_name, df, autofill_values = NULL) {
   openxlsx::addWorksheet(wb, sheet_name)
 
   # Handle Archive column and optional autofill rows

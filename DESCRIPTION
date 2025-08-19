@@ -13,6 +13,7 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     fs,
-    openxlsx
+    openxlsx,
+    utils
 URL: https://github.com/buchjani/eatArchive
 BugReports: https://github.com/buchjani/eatArchive/issues

@@ -35,16 +35,13 @@ remotes::install_github("buchjani/eatArchive")
 This is a schematic representation of the workflow, consisting of three
 major steps:
 
-1.  R function `write_metadata()` for generating an excel file
+1.  R function `write_directory_report()` for generating an excel file
     documenting the contents of a directory  
 2.  selecting files for archive, by specifying their archival
     subdirectory in the excel file
-3.  R function `create_archive()` for reading the excel file, copying
-    and converting files from the original directory to the archival
-    directory
+3.  R function `create_archive_from report()` for reading the excel
+    file, copying and converting files from the original directory to
+    the archival directory
 
 <img src="./man/figures/README-workflow.png" id="id" class="class"
 width="900" />
-
-Please note: `create_archive()` is currently under construction but will
-be available soon.

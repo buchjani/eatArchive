@@ -1,11 +1,12 @@
 #' Combine tables from multiple excel sheets in directory report
 #'
-#' @param path_to_directory_report. Character. Path to excel file resulting from `write_directory_report()` containing column
+#' @param path_to_directory_report Character. Path to excel file resulting from `write_directory_report()` containing column
 #' "Archive", indicating whether and where to archive the file.
 #'
 #' @keywords internal
 
 .combine_excel_sheets <- function(path_to_directory_report) {
+
   sheet_names <- openxlsx::getSheetNames(path_to_directory_report)
 
   all_data <- list()
@@ -28,4 +29,3 @@
 
 ### check
 # all_sheets <- .combine_excel_sheets(path_to_directory_report = "C:/R/files_report.xlsx")
-

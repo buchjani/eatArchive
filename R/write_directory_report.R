@@ -48,7 +48,7 @@
 #'
 #' @export
 
-write_metadata <- function(dir,
+write_directory_report <- function(dir,
                            output_file,
                            exclude_folders = "_Archive",
                            autofill_values = NA
@@ -61,11 +61,11 @@ write_metadata <- function(dir,
   wb <- openxlsx::createWorkbook()
 
   # Toplevel files (non-recursive)
-  toplevel_df <- get_file_info(dir = dir, recursive = FALSE)
+  toplevel_df <- .get_file_info(dir = dir, recursive = FALSE)
   toplevel_name <- basename(normalizePath(dir))
 
   if (!is.null(toplevel_df) && nrow(toplevel_df) > 0) {
-    add_sheet_with_style(wb, sheet_name = toplevel_name, df = toplevel_df, autofill_values = autofill_values)
+    .add_sheet_with_style(wb, sheet_name = toplevel_name, df = toplevel_df, autofill_values = autofill_values)
   } else if (is.null(toplevel_df) || nrow(toplevel_df) == 0) {
     toplevel_df <- data.frame("Info:" = paste0("Folder '", toplevel_name, "' contains no files."), stringsAsFactors = FALSE)
     openxlsx::addWorksheet(wb, toplevel_name)
@@ -83,12 +83,12 @@ write_metadata <- function(dir,
     # Print progress
     cat(paste0("... Folder [", f, "/", length(subfolders), "]: ", basename(folder), "\n"))
 
-    df <- get_file_info(dir = folder, recursive = TRUE)
+    df <- .get_file_info(dir = folder, recursive = TRUE)
     if (!is.null(df) && nrow(df) > 0) {
       sheet_name <- make.names(fs::path_file(folder))
       sheet_name <- ifelse(substr(sheet_name, 1,1)=="X" & substr(fs::path_file(folder), 1, 1) != "X", gsub('^X', '', sheet_name), sheet_name)
       sheet_name <- substr(sheet_name, 1, 31)
-      add_sheet_with_style(wb, sheet_name = sheet_name, df = df, autofill_values = autofill_values)
+      .add_sheet_with_style(wb, sheet_name = sheet_name, df = df, autofill_values = autofill_values)
     } else if (is.null(df) || nrow(df) == 0) {
       df <- data.frame("Info" = paste0("Folder '", folder_name, "' contains no files."), stringsAsFactors = FALSE)
       openxlsx::addWorksheet(wb, basename(normalizePath(folder)))
@@ -97,7 +97,8 @@ write_metadata <- function(dir,
   }
 
   # Save the final workbook, write message
-  cat("\nWriting metadata report to:\n")
+  cat("\nWriting directory report to:\n")
   cat(output_file)
   openxlsx::saveWorkbook(wb, output_file, overwrite = TRUE)
+  invisible(output_file)
 }

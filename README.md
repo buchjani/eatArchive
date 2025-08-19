@@ -5,14 +5,17 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/eatArchive?color=green)](https://cran.r-project.org/package=eatArchive)
 [![](https://img.shields.io/github/last-commit/buchjani/eatArchive.svg)](https://github.com/buchjani/eatArchive/commits/master)
 [![](https://img.shields.io/github/languages/code-size/buchjani/eatArchive.svg)](https://github.com/buchjani/eatArchive)
 [![](https://img.shields.io/badge/latest%20addition-IQB%20Methods%20eat--family-maroon.svg)](https://iqb-research.github.io/IQB-Methods/)
 [![](https://img.shields.io/badge/author%20experience-1st%20R%20package-green.svg)](https://www.iqb.hu-berlin.de/institut/staff/?pg=c163)
+<!-- [![](http://cranlogs.r-pkg.org/badges/grand-total/eatArchive?color=green)](https://cran.r-project.org/package=eatArchive) -->
+[![R-CMD-check](https://github.com/buchjani/eatArchive/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/buchjani/eatArchive/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 eatArchive helps you automate the archiving of directory contents using

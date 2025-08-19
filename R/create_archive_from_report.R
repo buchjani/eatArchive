@@ -28,7 +28,7 @@ create_archive_from_report <- function(path_to_directory_report,
   # keep only rows of files to be archived
   df <- df[!is.na(df$Archive) & !is.na(df$File_Name),]
   if(nrow(df) == 0){
-    stop("Column 'Archive' is empty across all sheets of your Excel file. Looks like there's nothing to be archived. ¯\\_(ツ)_/¯")
+    stop("Column 'Archive' is empty across all sheets of your Excel file. Looks like there's nothing to be archived.") # ¯\\_(ツ)_/¯
   }
 
   # create archival folder and subfolders as indicated

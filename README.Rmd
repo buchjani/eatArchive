@@ -11,12 +11,14 @@ library(badger)
 # eatArchive
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 `r badge_repostatus("Active")`
-`r badge_cran_download("eatArchive", "grand-total", "green")`
 `r badge_last_commit("buchjani/eatArchive")`
 `r badge_code_size("buchjani/eatArchive")`
 `r badge_custom("latest addition", "IQB Methods eat-family", "maroon", "https://iqb-research.github.io/IQB-Methods/")`
 `r badge_custom("author experience", "1st R package", "green", "https://www.iqb.hu-berlin.de/institut/staff/?pg=c163")`
+<!-- `r badge_cran_download("eatArchive", "grand-total", "green")` -->
+[![R-CMD-check](https://github.com/buchjani/eatArchive/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/buchjani/eatArchive/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 eatArchive helps you automate the archiving of directory contents using open, software-agnostic file formats. The package supports scanning nested directories, copying files into a new folder structure, and converting selected formats (e.g., XLSX to CSV, DOCX to PDF/A). Each step is documented in a machine-readable CSV log that records source paths, destination paths, and any format conversions applied.

@@ -17,6 +17,8 @@ create_archive_from_report <- function(path_to_directory_report,
                                        convert = TRUE,
                                        overwrite = TRUE){
 
+  stopifnot(file.exists(path_to_directory_report))
+
   # combine sheets in dataframe
   df <- .combine_excel_sheets(path_to_directory_report)
 

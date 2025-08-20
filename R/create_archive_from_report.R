@@ -87,8 +87,8 @@ create_archive_from_report <- function(path_to_directory_report,
   # write report
   report <- report[order(report$Dir_Archive),]
   row.names(report) <- NULL
-  utils::write.csv(x = report,
-                   file = paste0(path_to_archive_directory, "/_archive_documentation.csv"), row.names=FALSE, quote = FALSE)
+  .write_csv_utf8_bom(df = report,
+                      path = paste0(path_to_archive_directory, "/_archive_documentation.csv"), sep = ",", overwrite = overwrite)
 
   # print message
   cat(paste0(" Archive hast been created!\n",

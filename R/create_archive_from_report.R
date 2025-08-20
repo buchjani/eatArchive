@@ -57,9 +57,34 @@ create_archive_from_report <- function(path_to_directory_report,
 
   # write a report of what has been moved to where
   report <- data.frame(File_Name = basename(df$File_Name),
-                       Dir_Origin = dirname(df$File_Name),
-                       Dir_Archive =  paste0(path_to_archive_directory, "/", df$Archive),
-                       Conversion = NA)
+                       Dir_Origin = df$File_Name,
+                       Dir_Archive =  paste0(path_to_archive_directory, "/", df$Archive, "/", basename(df$File_Name)),
+                       Converted = FALSE)
+
+  ## Converting files
+  # xlsx --> csv
+  if(convert == TRUE){
+
+    df_xlsx <- df[grep("\\.xlsx?$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_xlsx) > 0){
+
+      for (i in 1:nrow(df_xlsx)){
+        csv_names <- .convert_xlsx_to_csv(xlsx_path = df_xlsx$File_Name[i],
+                             save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i]),
+                             overwrite = overwrite)
+        report <- rbind(report,
+                        data.frame(File_Name = rep(basename(df_xlsx$File_Name[i]), times = length(csv_names)),
+                                   Dir_Origin = rep(df_xlsx$File_Name[i], times = length(csv_names)),
+                                   Dir_Archive =  csv_names,
+                                   Converted = rep(TRUE, times = length(csv_names)))
+        )
+      }
+    }
+  }
+
+  # write report
+  report <- report[order(report$Dir_Archive),]
+  row.names(report) <- NULL
   utils::write.csv(x = report,
                    file = paste0(path_to_archive_directory, "/_archive_documentation.csv"), row.names=FALSE, quote = FALSE)
 
@@ -71,7 +96,9 @@ create_archive_from_report <- function(path_to_directory_report,
   invisible(report)
 }
 
-### Check
-# a<-create_archive_from_report(path_to_directory_report = "C:/R/files_report.xlsx",
-#                               path_to_archive_directory = "C:/R/meinArchiv")
+# ## Check
+# a <- create_archive_from_report(path_to_directory_report = "C:/R/files_report.xlsx",
+#                               path_to_archive_directory = "C:/R/meinArchiv",
+#                               overwrite = TRUE,
+#                               convert = TRUE)
 # a

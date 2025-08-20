@@ -7,6 +7,7 @@
 
 .combine_excel_sheets <- function(path_to_directory_report) {
 
+  stopifnot(file.exists(path_to_directory_report))
   sheet_names <- openxlsx::getSheetNames(path_to_directory_report)
 
   all_data <- list()

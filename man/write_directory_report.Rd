@@ -54,13 +54,13 @@ reviewed, copied, or converted based on the generated metadata file.
 \examples{
 \dontrun{
 # Write metadata for all subfolders of "my_project/"
-write_metadata("my_project/", "metadata_summary.xlsx")
+write_directory_report("my_project/", "metadata_summary.xlsx")
 
-# Include an autofill row with values for later tagging
-write_metadata("my_project/", "summary.xlsx", autofill_values = c("keep", "archive"))
+# Include an autofill row with names of archival folders
+write_directory_report("my_project/", "summary.xlsx", autofill_values = c("contracts", "data"))
 
 # Include all subfolders (do not exclude any)
-write_metadata("my_project/", "summary.xlsx", exclude_folders = NULL)
+write_directory_report("my_project/", "summary.xlsx", exclude_folders = NULL)
 }
 
 }

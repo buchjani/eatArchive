@@ -4,10 +4,10 @@
 \alias{.add_sheet_with_style}
 \title{Format the excel sheet}
 \usage{
-.add_sheet_with_style(wb, sheet_name, df, autofill_values = NULL)
+.add_sheet_with_style(wb, sheet_name, df, autocomplete_values = NULL)
 }
 \arguments{
-\item{autofill_values}{}
+\item{autocomplete_values}{}
 }
 \description{
 Format the excel sheet

@@ -3,26 +3,26 @@
 #' @param wb
 #' @param sheet_name
 #' @param df
-#' @param autofill_values
+#' @param autocomplete_values
 #'
 #' @keywords internal
 
-.add_sheet_with_style <- function(wb, sheet_name, df, autofill_values = NULL) {
+.add_sheet_with_style <- function(wb, sheet_name, df, autocomplete_values = NULL) {
   openxlsx::addWorksheet(wb, sheet_name)
 
-  # Handle Archive column and optional autofill rows
-  add_archive_col <- !is.null(autofill_values)  # TRUE for NA or character
-  add_autofill_rows <- is.character(autofill_values)
+  # Handle Archive column and optional autocomplete rows
+  add_archive_col <- !is.null(autocomplete_values)  # TRUE for NA or character
+  add_autocomplete_rows <- is.character(autocomplete_values)
 
   if (add_archive_col && !"Archive" %in% names(df)) {
     df$Archive <- NA
   }
 
-  if (add_autofill_rows) {
-    autofill_df <- as.data.frame(matrix(NA, nrow = length(autofill_values), ncol = ncol(df)))
-    names(autofill_df) <- names(df)
-    autofill_df$Archive <- autofill_values
-    df <- rbind(autofill_df, df)
+  if (add_autocomplete_rows) {
+    autocomplete_df <- as.data.frame(matrix(NA, nrow = length(autocomplete_values), ncol = ncol(df)))
+    names(autocomplete_df) <- names(df)
+    autocomplete_df$Archive <- autocomplete_values
+    df <- rbind(autocomplete_df, df)
   }
 
   # Fix time format
@@ -31,11 +31,11 @@
   # Add the data table to openxlsx object
   openxlsx::writeData(wb, sheet = sheet_name, x = df, startRow = 1, withFilter = TRUE)
 
-  # Hide autofill rows, if any
-  # Note: Using height = 1 (not 0) was neccessary for Excel filters/autocompletet to work
-  if (is.character(autofill_values)) {
-    autofill_rows <- 2:(1 + length(autofill_values))
-    openxlsx::setRowHeights(wb, sheet = sheet_name, rows = autofill_rows, heights = 1)
+  # Hide autocomplete rows, if any
+  # Note: Using height = 1 (not 0) was neccessary for Excel filters/autocomplete to work
+  if (is.character(autocomplete_values)) {
+    autocomplete_rows <- 2:(1 + length(autocomplete_values))
+    openxlsx::setRowHeights(wb, sheet = sheet_name, rows = autocomplete_rows, heights = 1)
   }
 
   # Header

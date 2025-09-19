@@ -9,7 +9,8 @@
 #' @param dir Character. Path to the directory whose immediate subfolders should be scanned.
 #' @param output_file Character. Path to the Excel file to be written (e.g., "metadata.xlsx").
 #' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
-#' @param autofill_values Optional. Controls whether and how the "Archive" column is included and pre-filled:
+#' @param autocomplete_values Optional. Controls whether the "Archive" column is included and which (if any)
+#' autocomplete values are to be provided:
 #'   - If `NULL`, the "Archive" column is not included.
 #'   - If `NA`, a column "Archive" is included but autocomplete and filtering in Excel will not be available.
 #'   - If a character vector is provided, the values are added to enable autocomplete and filtering in Excel,
@@ -20,7 +21,7 @@
 #' \itemize{
 #'   \item One sheet per immediate subfolder of the specified directory
 #'   \item Each sheet contains a recursive listing of all files in that subfolder (including sub-subfolders)
-#'   \item Optional autofill rows inserted directly below the header (e.g., for manual annotation)
+#'   \item Optional autocomplete rows inserted directly below the header (e.g., for manual annotation)
 #'   \item Column widths and light styling for improved readability
 #' }
 #'
@@ -39,8 +40,8 @@
 #' # Write metadata for all subfolders of "my_project/"
 #' write_directory_report("my_project/", "metadata_summary.xlsx")
 #'
-#' # Include an autofill row with names of archival folders
-#' write_directory_report("my_project/", "summary.xlsx", autofill_values = c("contracts", "data"))
+#' # Include an autocomplete row with names of archival folders
+#' write_directory_report("my_project/", "summary.xlsx", autocomplete_values = c("contracts", "data"))
 #'
 #' # Include all subfolders (do not exclude any)
 #' write_directory_report("my_project/", "summary.xlsx", exclude_folders = NULL)
@@ -51,7 +52,7 @@
 write_directory_report <- function(dir,
                            output_file,
                            exclude_folders = "_Archive",
-                           autofill_values = NA
+                           autocomplete_values = NA
                            ) {
 
   # Write message in console
@@ -65,7 +66,7 @@ write_directory_report <- function(dir,
   toplevel_name <- basename(normalizePath(dir))
 
   if (!is.null(toplevel_df) && nrow(toplevel_df) > 0) {
-    .add_sheet_with_style(wb, sheet_name = toplevel_name, df = toplevel_df, autofill_values = autofill_values)
+    .add_sheet_with_style(wb, sheet_name = toplevel_name, df = toplevel_df, autocomplete_values = autocomplete_values)
   } else if (is.null(toplevel_df) || nrow(toplevel_df) == 0) {
     toplevel_df <- data.frame("Info:" = paste0("Folder '", toplevel_name, "' contains no files."), stringsAsFactors = FALSE)
     openxlsx::addWorksheet(wb, toplevel_name)
@@ -88,7 +89,7 @@ write_directory_report <- function(dir,
       sheet_name <- make.names(fs::path_file(folder))
       sheet_name <- ifelse(substr(sheet_name, 1,1)=="X" & substr(fs::path_file(folder), 1, 1) != "X", gsub('^X', '', sheet_name), sheet_name)
       sheet_name <- substr(sheet_name, 1, 31)
-      .add_sheet_with_style(wb, sheet_name = sheet_name, df = df, autofill_values = autofill_values)
+      .add_sheet_with_style(wb, sheet_name = sheet_name, df = df, autocomplete_values = autocomplete_values)
     } else if (is.null(df) || nrow(df) == 0) {
       df <- data.frame("Info" = paste0("Folder '", folder_name, "' contains no files."), stringsAsFactors = FALSE)
       openxlsx::addWorksheet(wb, basename(normalizePath(folder)))

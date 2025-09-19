@@ -24,7 +24,7 @@ create_archive_from_report <- function(path_to_directory_report,
 
   # check if column Archive exists - if not , return message that function doesnt kknow what to move
   if("Archive" %in% colnames(df) == FALSE){
-    stop("Column 'Archive' is missing. Please use function `write_file_report()` and specify argument `autofill_values`.")
+    stop("Column 'Archive' is missing. Please use function `write_directory_report()` and specify argument `autocomplete_values`.")
   }
 
   # keep only rows of files to be archived

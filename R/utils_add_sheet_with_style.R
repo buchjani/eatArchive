@@ -11,7 +11,7 @@
   openxlsx::addWorksheet(wb, sheet_name)
 
   # Handle AIP column and optional autocomplete rows
-  add_aip_col <- !is.null(autocomplete_values)  
+  add_aip_col <- !is.null(autocomplete_values)
   add_autocomplete_rows <- is.character(autocomplete_values)
 
   if (add_aip_col && !"AIP" %in% names(df)) {
@@ -40,7 +40,7 @@
 
   # Header
   headerStyle <- openxlsx::createStyle(fontSize = 12, fontColour = "#FFFFFF", halign = "left",
-                                       fgFill = "#821123", border = "TopBottom", borderColour = "#821123")
+                                       fgFill = "#B40036", border = "TopBottom", borderColour = "#B40036")
   openxlsx::addStyle(wb, sheet = sheet_name, cols = 1: ncol(df), rows = 1, style = headerStyle,
                      gridExpand = TRUE, stack = TRUE)
   openxlsx::freezePane(wb, sheet = sheet_name, firstRow = TRUE)
@@ -61,13 +61,13 @@
 
   # Draw vertical lines
   openxlsx::addStyle(wb, sheet = sheet_name, cols = 1: ncol(df), rows = 2:(nrow(df)+1), gridExpand = TRUE, stack = TRUE,
-                     style = openxlsx::createStyle(border = "LeftRight", borderColour = "#821123"))
+                     style = openxlsx::createStyle(border = "LeftRight", borderColour = "#B40036"))
 
   # Draw line when folder changes
   dirs <- dirname(df$File_Name)
   dirs[is.na(dirs) | dirs == "."] <- ""
   change_rows <- which(dirs[-1] != dirs[-length(dirs)]) + 1
-  borderStyle <- openxlsx::createStyle(border = "top", borderStyle = "thin", borderColour = "#821123")
+  borderStyle <- openxlsx::createStyle(border = "top", borderStyle = "thin", borderColour = "#B40036")
 
   for (row in change_rows) {
     openxlsx::addStyle(wb, sheet = sheet_name, style = borderStyle, gridExpand = TRUE, stack = TRUE,
@@ -76,7 +76,7 @@
 
   # Draw line on bottom
   last_row <- nrow(df) + 1
-  bottomStyle <- openxlsx::createStyle(border = "bottom", borderStyle = "thin", borderColour = "#821123")
+  bottomStyle <- openxlsx::createStyle(border = "bottom", borderStyle = "thin", borderColour = "#B40036")
   openxlsx::addStyle(wb, sheet = sheet_name, style = bottomStyle,
                      rows = last_row, cols = 1:ncol(df),
                      gridExpand = TRUE, stack = TRUE)

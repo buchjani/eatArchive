@@ -1,8 +1,7 @@
 #' Find the longest common path in a vector of paths
 #'
-#' @param vec_paths
+#' @param vec_paths A character vector of paths.
 #'
-#' @returns
 #' @keywords internal
 #'
 #' @examples

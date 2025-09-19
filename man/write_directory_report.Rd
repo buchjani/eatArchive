@@ -8,7 +8,7 @@ write_directory_report(
   dir,
   output_file,
   exclude_folders = "_Archive",
-  autofill_values = NA
+  autocomplete_values = NA
 )
 }
 \arguments{
@@ -18,12 +18,13 @@ write_directory_report(
 
 \item{exclude_folders}{Character vector. Names of subfolders to exclude from processing.}
 
-\item{autofill_values}{Optional. Controls whether and how the "Archive" column is included and pre-filled:
+\item{autocomplete_values}{Optional. Controls whether the "AIP" column is included and which (if any)
+autocomplete values are to be provided:
 \itemize{
-\item If \code{NULL}, the "Archive" column is not included.
-\item If \code{NA}, a column "Archive" is included but autocomplete and filtering in Excel will not be available.
-\item If a character vector is provided, the values are added to enable autocomplete and filtering in Excel,
-making it easier to assign target folders for file archiving.
+\item If \code{NULL}, the "AIP" column is not included.
+\item If \code{NA}, a column "AIP" is included but autocomplete and filtering in Excel will not be available.
+\item If a character vector is provided, a column "AIP" is included and autocomplete and filtering in Excel is
+enabled, making it easier to assign target folders for file archiving.
 }}
 }
 \value{
@@ -33,7 +34,7 @@ Invisibly returns the path to the written Excel file.
 Scans each immediate subfolder of the specified directory (excluding any listed in \code{exclude_folders})
 and writes an Excel file containing file-level metadata. Each subfolder gets its own sheet, listing
 all files (recursively) with their name, size, and last modified timestamp.\cr \cr
-Optionally, an additional column named "Archive" is included in each sheet. The values of "Archive"
+Optionally, an additional column named "AIP" is included in each sheet. The values of "AIP"
 will later be used by \code{create_archive()} to indicate the destination folder for copying or converting files.
 }
 \details{
@@ -41,7 +42,7 @@ The Excel workbook includes:
 \itemize{
 \item One sheet per immediate subfolder of the specified directory
 \item Each sheet contains a recursive listing of all files in that subfolder (including sub-subfolders)
-\item Optional autofill rows inserted directly below the header (e.g., for manual annotation)
+\item Optional autocomplete rows inserted directly below the header (e.g., for manual annotation)
 \item Column widths and light styling for improved readability
 }
 
@@ -56,8 +57,8 @@ reviewed, copied, or converted based on the generated metadata file.
 # Write metadata for all subfolders of "my_project/"
 write_directory_report("my_project/", "metadata_summary.xlsx")
 
-# Include an autofill row with names of archival folders
-write_directory_report("my_project/", "summary.xlsx", autofill_values = c("contracts", "data"))
+# Include an autocomplete row with names of archival folders
+write_directory_report("my_project/", "summary.xlsx", autocomplete_values = c("contracts", "data"))
 
 # Include all subfolders (do not exclude any)
 write_directory_report("my_project/", "summary.xlsx", exclude_folders = NULL)

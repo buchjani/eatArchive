@@ -12,7 +12,7 @@ create_archive_from_report(
 )
 }
 \arguments{
-\item{path_to_directory_report}{Character. Path to Excel file resulting from \code{write_directory_report()} containing column "Archive", indicating whether and where to archive the file.}
+\item{path_to_directory_report}{Character. Path to Excel file resulting from \code{write_directory_report()} containing column "AIP", indicating whether and where to archive the file.}
 
 \item{path_to_archive_directory}{Character. Path to ....}
 

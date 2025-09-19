@@ -7,7 +7,7 @@
 .longest_common_path(vec_paths)
 }
 \arguments{
-\item{vec_paths}{}
+\item{vec_paths}{A character vector of paths.}
 }
 \description{
 Find the longest common path in a vector of paths

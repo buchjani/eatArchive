@@ -7,7 +7,13 @@
 .add_sheet_with_style(wb, sheet_name, df, autocomplete_values = NULL)
 }
 \arguments{
-\item{autocomplete_values}{}
+\item{wb}{An excel workbook.}
+
+\item{sheet_name}{Name of the excel sheet.}
+
+\item{df}{A data.frame.}
+
+\item{autocomplete_values}{A character vector of values which should be offered as autocomplete.}
 }
 \description{
 Format the excel sheet

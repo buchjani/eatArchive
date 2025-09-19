@@ -1,9 +1,9 @@
 #' Format the excel sheet
 #'
-#' @param wb
-#' @param sheet_name
-#' @param df
-#' @param autocomplete_values
+#' @param wb An excel workbook.
+#' @param sheet_name Name of the excel sheet.
+#' @param df A data.frame.
+#' @param autocomplete_values A character vector of values which should be offered as autocomplete.
 #'
 #' @keywords internal
 

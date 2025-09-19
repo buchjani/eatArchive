@@ -8,10 +8,6 @@
 #' @returns Folder and documentation of all files that have been copied...
 #'
 #' @export
-#'
-#' @examples
-#'
-
 create_archive_from_report <- function(path_to_directory_report,
                                        path_to_archive_directory,
                                        convert = TRUE,

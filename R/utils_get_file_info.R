@@ -6,13 +6,12 @@
 #' @keywords internal
 
 .get_file_info <- function(dir, recursive = FALSE) {
-  # Get all files (not directories)
-  paths <- fs::dir_ls(dir, recurse = recursive, type = "file")
 
-  # Convert to character vector for easier handling
+  # get file info, write to data.frame
+
+  paths <- fs::dir_ls(dir, recurse = recursive, type = "file")
   paths <- as.character(paths)
 
-  # Create a data.frame with desired metadata
   info <- data.frame(
     File_Name = paths,
     Size_Bytes = file.size(paths),

@@ -1,24 +1,24 @@
 #' Create an archival directory based on Excel file
 #'
 #' @param path_to_directory_report Character. Path to Excel file resulting from `write_directory_report()` containing column "AIP", indicating whether and where to archive the file.
-#' @param path_to_archive_directory Character. Path to ....
-#' @param convert Logical, indicating whether to convert file formats or not ....
-#' @param overwrite Logical, indicating whether to overwrite existing files ....
+#' @param path_to_archive_directory Character. Path to new archival directory.
+#' @param convert Logical, indicating whether to convert file formats or not.
+#' @param overwrite Logical, indicating whether to overwrite existing files or not.
 #'
-#' @returns Folder and documentation of all files that have been copied...
+#' @returns Folder of all files that have been copied as indicated in column "AIP" of the directory report, as well as a csv-file documenting all files that have been copied, including their original directory, new directory, and the information on whether the file had been converted or not.
 #'
 #' @export
 create_archive_from_report <- function(path_to_directory_report,
                                        path_to_archive_directory,
                                        convert = TRUE,
-                                       overwrite = TRUE){
+                                       overwrite = FALSE){
 
   stopifnot(file.exists(path_to_directory_report))
 
   # combine sheets in dataframe
   df <- .combine_excel_sheets(path_to_directory_report)
 
-  # check if column AIP exists - if not, return message that function doesnt kknow what to move
+  # check if column AIP exists - if not, return message that function doesnt know what to move
   if("AIP" %in% colnames(df) == FALSE){
     stop("Column 'AIP' is missing. Please use function `write_directory_report()` and specify argument `autocomplete_values`.")
   }

@@ -4,7 +4,21 @@
 \alias{create_archive_from_directory}
 \title{Create an archival directory of all files in a directory}
 \usage{
-create_archive_from_directory()
+create_archive_from_directory(
+  path_to_working_directory,
+  path_to_archive_directory,
+  convert = TRUE,
+  overwrite = FALSE
+)
+}
+\arguments{
+\item{path_to_working_directory}{Character. Path to existing folder whose files are to be copied.}
+
+\item{path_to_archive_directory}{Character. Path to new archival directory.}
+
+\item{convert}{Logical, indicating whether to convert file formats or not.}
+
+\item{overwrite}{Logical, indicating whether to overwrite existing files or not.}
 }
 \description{
 Create an archival directory of all files in a directory

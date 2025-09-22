@@ -1,6 +1,5 @@
 #' Create an archival directory of all files in a directory
 #'
-#' @returns
 #' @export
 #'
 #' @examples

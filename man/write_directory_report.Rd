@@ -6,7 +6,7 @@
 \usage{
 write_directory_report(
   dir,
-  output_file,
+  path_to_directory_report,
   exclude_folders = "_Archive",
   autocomplete_values = NA
 )
@@ -14,7 +14,7 @@ write_directory_report(
 \arguments{
 \item{dir}{Character. Path to the directory whose immediate subfolders should be scanned.}
 
-\item{output_file}{Character. Path to the Excel file to be written (e.g., "metadata.xlsx").}
+\item{path_to_directory_report}{Character. Path to the Excel file to be written (e.g., "C:/study/dir_report.xlsx").}
 
 \item{exclude_folders}{Character vector. Names of subfolders to exclude from processing.}
 

@@ -7,7 +7,7 @@
 #' will later be used by `create_archive()` to indicate the destination folder for copying or converting files.
 #'
 #' @param dir Character. Path to the directory whose immediate subfolders should be scanned.
-#' @param output_file Character. Path to the Excel file to be written (e.g., "metadata.xlsx").
+#' @param path_to_directory_report Character. Path to the Excel file to be written (e.g., "C:/study/dir_report.xlsx").
 #' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
 #' @param autocomplete_values Optional. Controls whether the "AIP" column is included and which (if any)
 #' autocomplete values are to be provided:
@@ -50,7 +50,7 @@
 #' @export
 
 write_directory_report <- function(dir,
-                           output_file,
+                           path_to_directory_report,
                            exclude_folders = "_Archive",
                            autocomplete_values = NA
                            ) {
@@ -99,7 +99,7 @@ write_directory_report <- function(dir,
 
   # Save the final workbook, write message
   cat("\nWriting directory report to:\n")
-  cat(output_file)
-  openxlsx::saveWorkbook(wb, output_file, overwrite = TRUE)
-  invisible(output_file)
+  cat(path_to_directory_report)
+  openxlsx::saveWorkbook(wb, path_to_directory_report, overwrite = TRUE)
+  invisible(path_to_directory_report)
 }

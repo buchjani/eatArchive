@@ -50,7 +50,7 @@ create_archive_from_report <- function(path_to_directory_report,
             "- Copying to:   ", path_to_archive_directory, "\n",
             "- Files to copy:", nrow(df), "\n",
             "- Size (KB):    ", sum(df$Size_Bytes/1000), "\n\n"
-            ))
+  ))
 
   invisible(mapply(file.copy,
                    from = df$File_Name,
@@ -61,29 +61,31 @@ create_archive_from_report <- function(path_to_directory_report,
 
   # write a report of what has been moved to where
   report <- data.frame(File_Name = basename(df$File_Name),
-                       Last_Modified = df$Last_Modified,
+                       Last_Modified = as.POSIXct(df$Last_Modified),
                        Size_Bytes = df$Size_Bytes,
                        Converted = FALSE,
                        Dir_Archive =  paste0(path_to_archive_directory, "/", df$Archive, "/", basename(df$File_Name)),
                        Dir_Origin = df$File_Name
-                       )
+  )
 
   # CONVERTING FILES ####
-
-  # xlsx --> csv
   if(convert == TRUE){
+
+    cat("\n Converting...\n")
+
+    # xlsx --> csv ----
 
     df_xlsx <- df[grep("\\.xlsx?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xlsx) > 0){
 
       for (i in 1:nrow(df_xlsx)){
         csv_names <- .convert_xlsx_to_csv(xlsx_path = df_xlsx$File_Name[i],
-                             save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i]),
-                             overwrite = overwrite)
+                                          save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i]),
+                                          overwrite = overwrite)
         report <- rbind(report,
                         data.frame(
                           File_Name = basename(csv_names),
-                          Last_Modified = df_xlsx$Last_Modified[i],
+                          Last_Modified = as.POSIXct(df_xlsx$Last_Modified[i]),
                           Size_Bytes = df_xlsx$Size_Bytes[i],
                           Converted = TRUE,
                           Dir_Archive = csv_names,
@@ -91,6 +93,21 @@ create_archive_from_report <- function(path_to_directory_report,
         )
       }
     }
+
+    # sav --> csv ----
+
+
+    # eml --> txt ----
+
+
+    # doc --> pdfa ----
+
+
+    # doc --> txt ----
+
+
+    # pdf --> pdfa ----
+
   }
 
   # write report

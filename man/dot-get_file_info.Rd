@@ -7,7 +7,9 @@
 .get_file_info(dir, recursive = FALSE)
 }
 \arguments{
-\item{recursive}{}
+\item{dir}{A directory.}
+
+\item{recursive}{Logical.}
 }
 \description{
 Scan directory and write table of file names and info

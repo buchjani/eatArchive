@@ -1,7 +1,7 @@
 #' Scan directory and write table of file names and info
 #'
-#' @param dir
-#' @param recursive
+#' @param dir A directory.
+#' @param recursive Logical.
 #'
 #' @keywords internal
 

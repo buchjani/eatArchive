@@ -7,6 +7,9 @@
 #'   - docx --> txt: word files are converted to txt files
 #'   - doc --> txt: word files are converted to txt files
 #' @param overwrite Logical, indicating whether to overwrite existing files in archival directory.
+#' @param csv Character specifying the csv type
+#'  - "csv" uses "." for the decimal point and "," for the separator
+#'  - "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
 #'
 #' @returns Folder and documentation of all files that have been copied.
 #'
@@ -18,9 +21,13 @@
 create_archive_from_report <- function(path_to_directory_report,
                                        path_to_archive_directory,
                                        convert = TRUE,
-                                       overwrite = TRUE){
+                                       overwrite = TRUE,
+                                       csv = "csv"){
 
   stopifnot(file.exists(path_to_directory_report))
+
+  sep <- ifelse(csv == "csv2", ";", ",")
+  dec <- ifelse(csv == "csv2", ",", ".")
 
   # combine sheets in dataframe
   df <- .combine_excel_sheets(path_to_directory_report)
@@ -137,7 +144,7 @@ create_archive_from_report <- function(path_to_directory_report,
   report <- report[order(report$Dir_Archive),]
   row.names(report) <- NULL
   .write_csv_utf8_bom(df = report,
-                      path = paste0(path_to_archive_directory, "/_archive_documentation.csv"), sep = ",", overwrite = overwrite)
+                      path = paste0(path_to_archive_directory, "/_archive_documentation.csv"), sep = sep, dec = dec, overwrite = overwrite)
 
   # print message
   cat(paste0("\n",

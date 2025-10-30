@@ -50,10 +50,9 @@
 #' @export
 
 write_directory_report <- function(dir,
-                           path_to_directory_report,
-                           exclude_folders = "_Archive",
-                           autocomplete_values = NA
-                           ) {
+                                   path_to_directory_report,
+                                   exclude_folders = "_Archive",
+                                   autocomplete_values = NA) {
 
   # Write message in console
   cat(paste0("Scanning base directory: ", "\n", dir, "\n", "\n"))

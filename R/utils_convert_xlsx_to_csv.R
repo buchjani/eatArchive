@@ -39,7 +39,7 @@
   invisible(out_files)
 }
 
-.write_csv_utf8_bom <- function(df, path, sep = ",", overwrite = FALSE) {
+.write_csv_utf8_bom <- function(df, path, sep = ",", dec = ".", overwrite = FALSE) {
   if (file.exists(path) && !overwrite) {
     stop("File exists and overwrite=FALSE: ", path)
   }
@@ -55,14 +55,18 @@
   utils::write.table(
     df, file = con,
     sep = sep,
-    row.names = FALSE, col.names = TRUE,
-    qmethod = "double", na = ""
+    dec = dec,
+    quote = FALSE,
+    row.names = FALSE,
+    col.names = TRUE,
+    qmethod = "double",
+    na = ""
   )
   close(con)
 }
 
-# check
-.convert_xlsx_to_csv(xlsx_path = "Q:/FDZ/Alle/01_Studien/TIMSS/TIMSS_2019/2_Pruefung/2a_Datenschutz/TIMSS_2019_v4_neueDatenschutzpruefung_mitNW.xlsx",
-                     save_to = "C:/R/",
-                     overwrite = TRUE)
+# # check
+# .convert_xlsx_to_csv(xlsx_path = "Q:/FDZ/Alle/01_Studien/TIMSS/TIMSS_2019/2_Pruefung/2a_Datenschutz/TIMSS_2019_v4_neueDatenschutzpruefung_mitNW.xlsx",
+#                      save_to = "C:/R/",
+#                      overwrite = TRUE)
 

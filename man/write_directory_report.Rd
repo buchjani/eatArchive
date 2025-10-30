@@ -18,12 +18,12 @@ write_directory_report(
 
 \item{exclude_folders}{Character vector. Names of subfolders to exclude from processing.}
 
-\item{autocomplete_values}{Optional. Controls whether the "AIP" column is included and which (if any)
+\item{autocomplete_values}{Optional. Controls whether the "Archive" column is included and which (if any)
 autocomplete values are to be provided:
 \itemize{
-\item If \code{NULL}, the "AIP" column is not included.
-\item If \code{NA}, a column "AIP" is included but autocomplete and filtering in Excel will not be available.
-\item If a character vector is provided, a column "AIP" is included and autocomplete and filtering in Excel is
+\item If \code{NULL}, the "Archive" column is not included.
+\item If \code{NA}, a column "Archive" is included but autocomplete and filtering in Excel will not be available.
+\item If a character vector is provided, a column "Archive" is included and autocomplete and filtering in Excel is
 enabled, making it easier to assign target folders for file archiving.
 }}
 }
@@ -34,7 +34,7 @@ Invisibly returns the path to the written Excel file.
 Scans each immediate subfolder of the specified directory (excluding any listed in \code{exclude_folders})
 and writes an Excel file containing file-level metadata. Each subfolder gets its own sheet, listing
 all files (recursively) with their name, size, and last modified timestamp.\cr \cr
-Optionally, an additional column named "AIP" is included in each sheet. The values of "AIP"
+Optionally, an additional column named "Archive" is included in each sheet. The values of "Archive"
 will later be used by \code{create_archive()} to indicate the destination folder for copying or converting files.
 }
 \details{

@@ -1,13 +1,13 @@
 #' Converts Word files (docx and doc) to txt-files
 #'
-#' @param doc_path
+#' @param docx_path
 #' @param save_to
 #'
 #' @returns
 #' @keywords internal
 
 .convert_docx_to_txt <- function(docx_path,
-                                save_to = dirname(doc_path),
+                                save_to = dirname(docx_path),
                                 overwrite = TRUE) {
 
   f <- docx_path
@@ -22,7 +22,7 @@
   has_bin <- function(cmd) nzchar(Sys.which(cmd))
 
   if (is_docx) {
-    # 1) Bevorzugt: pandoc
+    # 1) Preferred: pandoc
     if (has_bin("pandoc")) {
       system2("pandoc", c("-s", f, "-t", "plain", "-o", out))
     } else {
@@ -42,8 +42,7 @@
     if (has_bin("antiword")) {
       system2("antiword", c("-w", "0", f), stdout = out)
     } else if (has_bin("soffice")) {
-      system2("soffice", c("--headless", "--convert-to", "txt:Text", "--outdir", outdir, f))
-      # LibreOffice erzeugt out im outdir automatisch mit gleichem Basisnamen
+      system2("soffice", c("--headless", "--convert-to", "txt:Text", "--out", out, f))
     } else {
       stop("For converting .doc files, please install 'antiword' or LibreOffice ('soffice').")
     }

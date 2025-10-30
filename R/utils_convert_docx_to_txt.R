@@ -30,9 +30,6 @@
       if (requireNamespace("readtext", quietly = TRUE)) {
         txt <- readtext::readtext(f)$text
         writeLines(txt, out, useBytes = TRUE)
-      } else if (requireNamespace("textreadr", quietly = TRUE)) {
-        txt <- textreadr::read_docx(f)
-        writeLines(txt, out, useBytes = TRUE)
       } else {
         stop("For converting .docx files, please install either 'pandoc' or one of these R packages: 'readtext', 'textreadr'.")
       }

@@ -13,6 +13,8 @@
                                  #encoding = "UTF-8"
                                  ) {
 
+  xlsx_path <- tolower(xlsx_path)
+
   stopifnot(is.character(xlsx_path), length(xlsx_path) == 1)
   if (!file.exists(xlsx_path)) {
     stop("File does not exist: ", xlsx_path, call. = FALSE)

@@ -127,7 +127,7 @@ create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-
         )
       }
     }
-
+    # xlsm --> csv ----
     # sav --> csv ----
     # eml --> txt ----
     # doc --> pdfa ----
@@ -159,6 +159,7 @@ create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-
 
   # write report
   report <- report[order(report$Dir_Archive),]
+  report$Last_Modified <-  format(report$Last_Modified, "%Y-%m-%d %H:%M:%S", tz = "Europe/Berlin")
   row.names(report) <- NULL
   .write_csv_utf8_bom(df = report,
                       path = paste0(path_to_archive_directory, "/_archive_documentation.csv"), sep = sep, dec = dec, overwrite = overwrite)

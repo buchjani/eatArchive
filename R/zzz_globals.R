@@ -3,5 +3,6 @@ utils::globalVariables(c(
   ".combine_excel_sheets",
   ".get_file_info",
   ".longest_common_path",
-  ".convert_xlsx_to_csv"
+  ".convert_xlsx_to_csv",
+  ".convert_docx_to_txt"
 ))

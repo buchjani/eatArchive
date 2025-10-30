@@ -1,11 +1,14 @@
 #' Create an archival directory based on Excel file
 #'
 #' @param path_to_directory_report Character. Path to Excel file resulting from `write_directory_report()` containing column "Archive", indicating whether and where to archive the file.
-#' @param path_to_archive_directory Character. Path to ....
-#' @param convert Logical, indicating whether to convert file formats or not ....
-#' @param overwrite Logical, indicating whether to overwrite existing files ....
+#' @param path_to_archive_directory Character. Path indicating where to create the archival directory.
+#' @param convert Logical, indicating whether to convert file formats or not. Current files for conversion are:
+#'   - xlsx --> csv: each sheet of an excel file is converted to a csv file
+#'   - docx --> txt: word files are converted to txt files
+#'   - doc --> txt: word files are converted to txt files
+#' @param overwrite Logical, indicating whether to overwrite existing files in archival directory.
 #'
-#' @returns Folder and documentation of all files that have been copied...
+#' @returns Folder and documentation of all files that have been copied.
 #'
 #' @export
 #'
@@ -103,7 +106,27 @@ create_archive_from_report <- function(path_to_directory_report,
     # doc --> pdfa ----
 
 
-    # doc --> txt ----
+    # doc(x) --> txt ----
+
+    df_docx <- df[grep("\\.docx?$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_docx) > 0){
+
+      for (i in 1:nrow(df_docx)){
+        txt_name <- .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
+                                         save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i]),
+                                         overwrite = overwrite
+        )
+        report <- rbind(report,
+                        data.frame(
+                          File_Name = basename(txt_name),
+                          Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
+                          Size_Bytes = df_docx$Size_Bytes[i],
+                          Converted = TRUE,
+                          Dir_Archive = txt_name,
+                          Dir_Origin = rep(df_docx$File_Name[i], times = length(txt_name)))
+        )
+      }
+    }
 
 
     # pdf --> pdfa ----

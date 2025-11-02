@@ -1,32 +1,42 @@
 #' Create an archival directory based on Excel file
 #'
-#' @param path_to_directory_report Character. Path to Excel file resulting from `write_directory_report()` containing column "AIP", indicating whether and where to archive the file.
-#' @param path_to_archive_directory Character. Path to ....
-#' @param convert Logical, indicating whether to convert file formats or not ....
-#' @param overwrite Logical, indicating whether to overwrite existing files ....
+#' @param path_to_directory_report Character. Path to Excel file resulting from `write_directory_report()` containing column "Archive", indicating whether and where to archive the file.
+#' @param path_to_archive_directory Character. Path indicating where to create the archival directory.
+#' @param convert Logical, indicating whether to convert file formats or not. Current files for conversion are:
+#'   - xlsx --> csv: each sheet of an excel file is converted to a csv file
+#'   - docx --> txt: word files are converted to txt files
+#'   - doc --> txt: word files are converted to txt files
+#' @param overwrite Logical, indicating whether to overwrite existing files in archival directory.
+#' @param csv Character specifying the csv type
+#'  - "csv" uses "." for the decimal point and "," for the separator
+#'  - "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
 #'
-#' @returns Folder and documentation of all files that have been copied...
+#' @returns Folder and documentation of all files that have been copied.
 #'
 #' @export
 create_archive_from_report <- function(path_to_directory_report,
                                        path_to_archive_directory,
                                        convert = TRUE,
-                                       overwrite = TRUE){
+                                       overwrite = TRUE,
+                                       csv = "csv"){
 
   stopifnot(file.exists(path_to_directory_report))
+
+  sep <- ifelse(csv == "csv2", ";", ",")
+  dec <- ifelse(csv == "csv2", ",", ".")
 
   # combine sheets in dataframe
   df <- .combine_excel_sheets(path_to_directory_report)
 
-  # check if column AIP exists - if not, return message that function doesnt kknow what to move
-  if("AIP" %in% colnames(df) == FALSE){
-    stop("Column 'AIP' is missing. Please use function `write_directory_report()` and specify argument `autocomplete_values`.")
+  # check if column Archive exists - if not, return message that function doesnt kknow what to move
+  if("Archive" %in% colnames(df) == FALSE){
+    stop("Column 'Archive' is missing. Please use function `write_directory_report()` and specify argument `autocomplete_values`.")
   }
 
   # keep only rows of files to be archived
-  df <- df[!is.na(df$AIP) & !is.na(df$File_Name),]
+  df <- df[!is.na(df$Archive) & !is.na(df$File_Name),]
   if(nrow(df) == 0){
-    stop("Column 'AIP' is empty across all sheets of your Excel file. Looks like there's nothing to be archived.") # ¯\\_(ツ)_/¯
+    stop("Column 'Archive' is empty across all sheets of your Excel file. Looks like there's nothing to be archived.") # ¯\\_(ツ)_/¯
   }
 
   # create archival folder and subfolders as indicated
@@ -35,59 +45,108 @@ create_archive_from_report <- function(path_to_directory_report,
     message(paste("Info. New folder has been created:", path_to_archive_directory))
   }
 
-  subdirs <- paste0(path_to_archive_directory, "/", unique(df$AIP))
+  subdirs <- paste0(path_to_archive_directory, "/", unique(df$Archive))
   invisible(lapply(subdirs, dir.create, recursive = TRUE, showWarnings = FALSE))
 
-  # move files to folder indicated in column "AIP"
-  cat(paste(" Creating AIP...\n",
+  # MOVING FILES ####
+
+  # move files to folder indicated in column "Archive"
+  cat(paste(" Creating Archive...\n",
             "- Copying from: ", .longest_common_path(df$File_Name), "\n",
             "- Copying to:   ", path_to_archive_directory, "\n",
             "- Files to copy:", nrow(df), "\n",
-            "- Size (KB):    ", sum(df$Size_Bytes/1000), "\n"
-            ))
+            "- Size (KB):    ", sum(df$Size_Bytes/1000), "\n\n"
+  ))
 
   invisible(mapply(file.copy,
                    from = df$File_Name,
-                   to = paste0(path_to_archive_directory, "/", df$AIP),
+                   to = paste0(path_to_archive_directory, "/", df$Archive),
                    copy.date = TRUE,
                    overwrite = overwrite))
 
 
   # write a report of what has been moved to where
   report <- data.frame(File_Name = basename(df$File_Name),
-                       Dir_Origin = df$File_Name,
-                       Dir_Archive =  paste0(path_to_archive_directory, "/", df$AIP, "/", basename(df$File_Name)),
-                       Converted = FALSE)
+                       Last_Modified = as.POSIXct(df$Last_Modified),
+                       Size_Bytes = df$Size_Bytes,
+                       Converted = FALSE,
+                       Dir_Archive =  paste0(path_to_archive_directory, "/", df$Archive, "/", basename(df$File_Name)),
+                       Dir_Origin = df$File_Name
+  )
 
-  ## Converting files
-  # xlsx --> csv
+  # CONVERTING FILES ####
   if(convert == TRUE){
+
+    cat("\n Converting...\n")
+
+    # xlsx --> csv ----
 
     df_xlsx <- df[grep("\\.xlsx?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xlsx) > 0){
 
       for (i in 1:nrow(df_xlsx)){
         csv_names <- .convert_xlsx_to_csv(xlsx_path = df_xlsx$File_Name[i],
-                             save_to = paste0(path_to_archive_directory, "/", df_xlsx$AIP[i]),
-                             overwrite = overwrite)
+                                          save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i]),
+                                          overwrite = overwrite)
         report <- rbind(report,
-                        data.frame(File_Name = rep(basename(df_xlsx$File_Name[i]), times = length(csv_names)),
-                                   Dir_Origin = rep(df_xlsx$File_Name[i], times = length(csv_names)),
-                                   Dir_Archive =  csv_names,
-                                   Converted = rep(TRUE, times = length(csv_names)))
+                        data.frame(
+                          File_Name = basename(csv_names),
+                          Last_Modified = as.POSIXct(df_xlsx$Last_Modified[i]),
+                          Size_Bytes = df_xlsx$Size_Bytes[i],
+                          Converted = TRUE,
+                          Dir_Archive = csv_names,
+                          Dir_Origin = rep(df_xlsx$File_Name[i], times = length(csv_names)))
         )
       }
     }
+
+    # xlsm --> csv ----
+    # sav --> csv ----
+
+
+    # eml --> txt ----
+
+
+    # doc --> pdfa ----
+
+
+    # doc(x) --> txt ----
+
+    df_docx <- df[grep("\\.docx?$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_docx) > 0){
+
+      for (i in 1:nrow(df_docx)){
+        txt_name <- .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
+                                         save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i]),
+                                         overwrite = overwrite
+        )
+        report <- rbind(report,
+                        data.frame(
+                          File_Name = basename(txt_name),
+                          Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
+                          Size_Bytes = df_docx$Size_Bytes[i],
+                          Converted = TRUE,
+                          Dir_Archive = txt_name,
+                          Dir_Origin = rep(df_docx$File_Name[i], times = length(txt_name)))
+        )
+      }
+    }
+
+
+    # pdf --> pdfa ----
+
   }
 
   # write report
   report <- report[order(report$Dir_Archive),]
+  report$Last_Modified <-  format(report$Last_Modified, "%Y-%m-%d %H:%M:%S", tz = "Europe/Berlin")
   row.names(report) <- NULL
   .write_csv_utf8_bom(df = report,
-                      path = paste0(path_to_archive_directory, "/_archive_documentation.csv"), sep = ",", overwrite = overwrite)
+                      path = paste0(path_to_archive_directory, "/_archive_documentation.csv"), sep = sep, dec = dec, overwrite = overwrite)
 
   # print message
-  cat(paste0(" AIP hast been created!\n",
+  cat(paste0("\n",
+             " Archive hast been created!\n",
              " Documentation: ", path_to_archive_directory, "/_archive_documentation.csv"))
 
   # invisibly return report

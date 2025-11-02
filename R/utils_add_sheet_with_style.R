@@ -10,18 +10,18 @@
 .add_sheet_with_style <- function(wb, sheet_name, df, autocomplete_values = NULL) {
   openxlsx::addWorksheet(wb, sheet_name)
 
-  # Handle AIP column and optional autocomplete rows
-  add_aip_col <- !is.null(autocomplete_values)
+  # Handle "Archive" column and optional autocomplete rows
+  add_archive_col <- !is.null(autocomplete_values)
   add_autocomplete_rows <- is.character(autocomplete_values)
 
-  if (add_aip_col && !"AIP" %in% names(df)) {
-    df$AIP <- NA
+  if (add_archive_col && !"Archive" %in% names(df)) {
+    df$Archive <- NA
   }
 
   if (add_autocomplete_rows) {
     autocomplete_df <- as.data.frame(matrix(NA, nrow = length(autocomplete_values), ncol = ncol(df)))
     names(autocomplete_df) <- names(df)
-    autocomplete_df$AIP <- autocomplete_values
+    autocomplete_df$Archive <- autocomplete_values
     df <- rbind(autocomplete_df, df)
   }
 

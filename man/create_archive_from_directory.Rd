@@ -4,14 +4,40 @@
 \alias{create_archive_from_directory}
 \title{Create an archival directory of all files in a directory}
 \usage{
-create_archive_from_directory()
+create_archive_from_directory(
+  path_to_working_directory = "C:/r/FDZ-workshops",
+  path_to_archive_directory = "C:/R/FDZ-workshops_testkopie",
+  exclude_folders = "_Archive",
+  convert = TRUE,
+  overwrite = TRUE,
+  csv = "csv"
+)
+}
+\arguments{
+\item{path_to_working_directory}{Character. Path to working directory which is to be archived.}
+
+\item{path_to_archive_directory}{Character. Path indicating where to create the archival directory.}
+
+\item{exclude_folders}{Character vector. Names of subfolders to exclude from processing.}
+
+\item{convert}{Logical, indicating whether to convert file formats or not. Current files for conversion are:
+\itemize{
+\item xlsx --> csv: each sheet of an excel file is converted to a csv file
+\item docx --> txt: word files are converted to txt files
+\item doc --> txt: word files are converted to txt files
+}}
+
+\item{overwrite}{Logical, indicating whether to overwrite existing files in archival directory.}
+
+\item{csv}{Character specifying the csv type
+\itemize{
+\item "csv" uses "." for the decimal point and "," for the separator
+\item "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
+}}
+}
+\value{
+Folder and documentation of all files that have been copied.
 }
 \description{
 Create an archival directory of all files in a directory
-}
-\examples{
-\dontrun{
-create_archive_from_directory()
-}
-
 }

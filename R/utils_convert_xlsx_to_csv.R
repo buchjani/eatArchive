@@ -13,6 +13,8 @@
                                  #encoding = "UTF-8"
                                  ) {
 
+  xlsx_path <- tolower(xlsx_path)
+
   stopifnot(is.character(xlsx_path), length(xlsx_path) == 1)
   if (!file.exists(xlsx_path)) {
     stop("File does not exist: ", xlsx_path, call. = FALSE)
@@ -30,14 +32,14 @@
 
   # iterate over sheets
   for (i in seq_along(sheet_names)) {
-    df <- openxlsx::read.xlsx(xlsx_path, sheet = sheet_names[i])
+    df <- suppressWarnings(openxlsx::read.xlsx(xlsx_path, sheet = sheet_names[i]))
     .write_csv_utf8_bom(df, out_files[i], sep = ",", overwrite = overwrite)
   }
 
   invisible(out_files)
 }
 
-.write_csv_utf8_bom <- function(df, path, sep = ",", overwrite = FALSE) {
+.write_csv_utf8_bom <- function(df, path, sep = ",", dec = ".", overwrite = FALSE) {
   if (file.exists(path) && !overwrite) {
     stop("File exists and overwrite=FALSE: ", path)
   }
@@ -53,8 +55,12 @@
   utils::write.table(
     df, file = con,
     sep = sep,
-    row.names = FALSE, col.names = TRUE,
-    qmethod = "double", na = ""
+    dec = dec,
+    quote = FALSE,
+    row.names = FALSE,
+    col.names = TRUE,
+    qmethod = "double",
+    na = ""
   )
   close(con)
 }

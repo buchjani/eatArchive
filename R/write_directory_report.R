@@ -3,17 +3,17 @@
 #' Scans each immediate subfolder of the specified directory (excluding any listed in `exclude_folders`)
 #' and writes an Excel file containing file-level metadata. Each subfolder gets its own sheet, listing
 #' all files (recursively) with their name, size, and last modified timestamp.\cr \cr
-#' Optionally, an additional column named "AIP" is included in each sheet. The values of "AIP"
+#' Optionally, an additional column named "Archive" is included in each sheet. The values of "Archive"
 #' will later be used by `create_archive()` to indicate the destination folder for copying or converting files.
 #'
 #' @param dir Character. Path to the directory whose immediate subfolders should be scanned.
 #' @param path_to_directory_report Character. Path to the Excel file to be written (e.g., "C:/study/dir_report.xlsx").
 #' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
-#' @param autocomplete_values Optional. Controls whether the "AIP" column is included and which (if any)
+#' @param autocomplete_values Optional. Controls whether the "Archive" column is included and which (if any)
 #' autocomplete values are to be provided:
-#'   - If `NULL`, the "AIP" column is not included.
-#'   - If `NA`, a column "AIP" is included but autocomplete and filtering in Excel will not be available.
-#'   - If a character vector is provided, a column "AIP" is included and autocomplete and filtering in Excel is
+#'   - If `NULL`, the "Archive" column is not included.
+#'   - If `NA`, a column "Archive" is included but autocomplete and filtering in Excel will not be available.
+#'   - If a character vector is provided, a column "Archive" is included and autocomplete and filtering in Excel is
 #'     enabled, making it easier to assign target folders for file archiving.
 #'
 #' @details
@@ -50,10 +50,9 @@
 #' @export
 
 write_directory_report <- function(dir,
-                           path_to_directory_report,
-                           exclude_folders = "_Archive",
-                           autocomplete_values = NA
-                           ) {
+                                   path_to_directory_report,
+                                   exclude_folders = "_Archive",
+                                   autocomplete_values = NA) {
 
   # Write message in console
   cat(paste0("Scanning base directory: ", "\n", dir, "\n", "\n"))

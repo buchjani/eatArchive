@@ -8,20 +8,32 @@ create_archive_from_report(
   path_to_directory_report,
   path_to_archive_directory,
   convert = TRUE,
-  overwrite = TRUE
+  overwrite = TRUE,
+  csv = "csv"
 )
 }
 \arguments{
-\item{path_to_directory_report}{Character. Path to Excel file resulting from \code{write_directory_report()} containing column "AIP", indicating whether and where to archive the file.}
+\item{path_to_directory_report}{Character. Path to Excel file resulting from \code{write_directory_report()} containing column "Archive", indicating whether and where to archive the file.}
 
-\item{path_to_archive_directory}{Character. Path to ....}
+\item{path_to_archive_directory}{Character. Path indicating where to create the archival directory.}
 
-\item{convert}{Logical, indicating whether to convert file formats or not ....}
+\item{convert}{Logical, indicating whether to convert file formats or not. Current files for conversion are:
+\itemize{
+\item xlsx --> csv: each sheet of an excel file is converted to a csv file
+\item docx --> txt: word files are converted to txt files
+\item doc --> txt: word files are converted to txt files
+}}
 
-\item{overwrite}{Logical, indicating whether to overwrite existing files ....}
+\item{overwrite}{Logical, indicating whether to overwrite existing files in archival directory.}
+
+\item{csv}{Character specifying the csv type
+\itemize{
+\item "csv" uses "." for the decimal point and "," for the separator
+\item "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
+}}
 }
 \value{
-Folder and documentation of all files that have been copied...
+Folder and documentation of all files that have been copied.
 }
 \description{
 Create an archival directory based on Excel file

@@ -4,6 +4,7 @@
 #' @param path_to_archive_directory Character. Path indicating where to create the archival directory.
 #' @param convert Logical, indicating whether to convert file formats or not. Current files for conversion are:
 #'   - xlsx --> csv: each sheet of an excel file is converted to a csv file
+#'   - xlsm --> csv: each sheet of an excel macro file is converted to a csv file
 #'   - docx --> txt: word files are converted to txt files
 #'   - doc --> txt: word files are converted to txt files
 #' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
@@ -18,14 +19,17 @@
 #'
 #' @examples
 
-create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-workshops",
-                                          path_to_archive_directory = "C:/R/FDZ-workshops_testkopie",
+create_archive_from_directory <- function(path_to_working_directory,
+                                          path_to_archive_directory,
                                           exclude_folders = "_Archive",
                                           convert = TRUE,
-                                          overwrite = TRUE,
+                                          overwrite = FALSE,
                                           csv = "csv"){
 
   stopifnot(dir.exists(path_to_working_directory))
+  if(dir.exists(path_to_archive_directory) & overwrite == FALSE){
+    stop("path_to_archive_directory already exists. Set overwrite = TRUE or delete path_to_archive_directory folder.")
+  }
 
   sep <- ifelse(csv == "csv2", ";", ",")
   dec <- ifelse(csv == "csv2", ",", ".")
@@ -54,11 +58,10 @@ create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-
     # Print progress
     cat(paste0(" - Folder [", f, "/", length(subdirs), "]: ", folder_name, "\n"))
 
-    df_tmp <- .get_file_info(dir = folder, recursive = TRUE)
+    df_tmp <- .get_file_info(dir = folder, recursive = FALSE)
     df <- rbind(df, df_tmp)
   }
   cat("\n")
-
 
   # CREATE ARCHIVE DIRECTORY ----
 
@@ -110,7 +113,10 @@ create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-
     # xlsx --> csv ----
 
     df_xlsx <- df[grep("\\.xlsx?$", df$File_Name, ignore.case = TRUE),]
+
     if(nrow(df_xlsx) > 0){
+
+      cat(paste0(" - xlsx --> csv (n = ", nrow(df_xlsx), ")\n"))
 
       for (i in 1:nrow(df_xlsx)){
         csv_names <- .convert_xlsx_to_csv(xlsx_path = df_xlsx$File_Name[i],
@@ -127,7 +133,46 @@ create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-
         )
       }
     }
+
+
     # xlsm --> csv ----
+
+    df_xlsm <- df[grep("\\.xlsm?$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_xlsm) > 0){
+
+      cat(paste0(" - xlsm --> csv (n = ", nrow(df_xlsm), ")\n"))
+
+      for (i in 1:nrow(df_xlsm)){
+        csv_names <- .convert_xlsm_to_csv(xlsm_path = df_xlsm$File_Name[i],
+                                          save_to = dirname(df_xlsm$File_Name_Archive[i]),
+                                          overwrite = overwrite)
+
+        # in case of buggy (corrupted) xlsm-file, csv_names will be empty
+        # --> add error message to report
+
+        if(length(csv_names) == 0){
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(df_xlsm$File_Name[i]),
+                            Last_Modified = as.POSIXct(df_xlsm$Last_Modified[i]),
+                            Size_Bytes = df_xlsm$Size_Bytes[i],
+                            Converted = "ERROR",
+                            Dir_Archive = df_xlsm$File_Name_Archive[i],
+                            Dir_Origin = df_xlsm$File_Name[i]))
+        } else {
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(csv_names),
+                            Last_Modified = as.POSIXct(df_xlsm$Last_Modified[i]),
+                            Size_Bytes = df_xlsm$Size_Bytes[i],
+                            Converted = TRUE,
+                            Dir_Archive = csv_names,
+                            Dir_Origin = rep(df_xlsm$File_Name[i], times = length(csv_names)))
+          )
+        }
+      }
+    }
+
     # sav --> csv ----
     # eml --> txt ----
     # doc --> pdfa ----
@@ -135,6 +180,8 @@ create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-
 
     df_docx <- df[grep("\\.docx?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_docx) > 0){
+
+      cat(paste0(" - docx --> txt (n = ", nrow(df_docx), ")\n"))
 
       for (i in 1:nrow(df_docx)){
         txt_name <- .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
@@ -174,5 +221,12 @@ create_archive_from_directory <- function(path_to_working_directory = "C:/r/FDZ-
 
 }
 
-### Check:
-# create_archive_from_directory()
+# ### Check:
+# create_archive_from_directory(
+#   path_to_working_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner",
+#   path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner_AIP",
+#   exclude_folders = "_Archive",
+#   convert = TRUE,
+#   overwrite = TRUE,
+#   csv = "csv"
+# )

@@ -4,10 +4,10 @@
 \alias{.fix_umlaut}
 \title{Umlaute in Dateinamen ersetzen (ä→ae, ö→oe, ü→ue, ß→ss; Großbuchstaben: Ae/Oe/Ue)}
 \usage{
-.fix_umlaut(string)
+.fix_umlaut(x)
 }
 \arguments{
-\item{string}{}
+\item{x}{}
 }
 \description{
 Umlaute in Dateinamen ersetzen (ä→ae, ö→oe, ü→ue, ß→ss; Großbuchstaben: Ae/Oe/Ue)

@@ -5,15 +5,15 @@
 #' @returns
 #' @keywords internal
 
-.fix_umlaut <- function(string) {
-  string <- gsub("ä", "ae", string, fixed = TRUE)
-  string <- gsub("ö", "oe", string, fixed = TRUE)
-  string <- gsub("ü", "ue", string, fixed = TRUE)
-  string <- gsub("Ä", "Ae", string, fixed = TRUE)
-  string <- gsub("Ö", "Oe", string, fixed = TRUE)
-  string <- gsub("Ü", "Ue", string, fixed = TRUE)
-  string <- gsub("ß", "ss", string, fixed = TRUE)
-  return(string)
+.fix_umlaut <- function(x) {
+  x <- gsub("\u00E4", "ae", x, fixed = TRUE) # ä
+  x <- gsub("\u00F6", "oe", x, fixed = TRUE) # ö
+  x <- gsub("\u00FC", "ue", x, fixed = TRUE) # ü
+  x <- gsub("\u00C4", "Ae", x, fixed = TRUE) # Ä
+  x <- gsub("\u00D6", "Oe", x, fixed = TRUE) # Ö
+  x <- gsub("\u00DC", "Ue", x, fixed = TRUE) # Ü
+  x <- gsub("\u00DF", "ss", x, fixed = TRUE) # ß
+  x
 }
 
 # # check:

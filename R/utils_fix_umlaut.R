@@ -1,6 +1,6 @@
 #' Umlaute in Dateinamen ersetzen (ä→ae, ö→oe, ü→ue, ß→ss; Großbuchstaben: Ae/Oe/Ue)
 #'
-#' @param path
+#' @param string
 #'
 #' @returns
 #' @keywords internal

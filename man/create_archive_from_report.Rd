@@ -20,6 +20,7 @@ create_archive_from_report(
 \item{convert}{Logical, indicating whether to convert file formats or not. Current files for conversion are:
 \itemize{
 \item xlsx --> csv: each sheet of an excel file is converted to a csv file
+\item xlsm --> csv: each sheet of an excel macro file is converted to a csv file
 \item docx --> txt: word files are converted to txt files
 \item doc --> txt: word files are converted to txt files
 }}

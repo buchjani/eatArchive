@@ -5,11 +5,11 @@
 \title{Create an archival directory of all files in a directory}
 \usage{
 create_archive_from_directory(
-  path_to_working_directory = "C:/r/FDZ-workshops",
-  path_to_archive_directory = "C:/R/FDZ-workshops_testkopie",
+  path_to_working_directory,
+  path_to_archive_directory,
   exclude_folders = "_Archive",
   convert = TRUE,
-  overwrite = TRUE,
+  overwrite = FALSE,
   csv = "csv"
 )
 }
@@ -23,6 +23,7 @@ create_archive_from_directory(
 \item{convert}{Logical, indicating whether to convert file formats or not. Current files for conversion are:
 \itemize{
 \item xlsx --> csv: each sheet of an excel file is converted to a csv file
+\item xlsm --> csv: each sheet of an excel macro file is converted to a csv file
 \item docx --> txt: word files are converted to txt files
 \item doc --> txt: word files are converted to txt files
 }}

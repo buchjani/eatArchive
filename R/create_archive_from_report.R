@@ -15,6 +15,7 @@
 #' @returns Folder and documentation of all files that have been copied.
 #'
 #' @export
+
 create_archive_from_report <- function(path_to_directory_report,
                                        path_to_archive_directory,
                                        convert = TRUE,
@@ -46,12 +47,12 @@ create_archive_from_report <- function(path_to_directory_report,
     message(paste("Info. New folder has been created:", path_to_archive_directory))
   }
 
-  subdirs <- paste0(path_to_archive_directory, "/", unique(df$Archive))
+  subdirs <- paste0(path_to_archive_directory, "/", .fix_umlaut(unique(df$Archive)))
   invisible(lapply(subdirs, dir.create, recursive = TRUE, showWarnings = FALSE))
 
   # MOVING FILES ####
 
-  # move files to folder indicated in column "Archive"
+  # move files to folder indicated in column "Archive", but fix filename for Umlaute
   cat(paste(" Creating Archive...\n",
             "- Copying from: ", .longest_common_path(df$File_Name), "\n",
             "- Copying to:   ", path_to_archive_directory, "\n",
@@ -61,17 +62,16 @@ create_archive_from_report <- function(path_to_directory_report,
 
   invisible(mapply(file.copy,
                    from = df$File_Name,
-                   to = paste0(path_to_archive_directory, "/", df$Archive),
+                   to = paste0(path_to_archive_directory, "/", df$Archive, "/", .fix_umlaut(basename(df$File_Name))),
                    copy.date = TRUE,
                    overwrite = overwrite))
 
-
   # write a report of what has been moved to where
-  report <- data.frame(File_Name = basename(df$File_Name),
+  report <- data.frame(File_Name = .fix_umlaut(basename(df$File_Name)),
                        Last_Modified = as.POSIXct(df$Last_Modified),
                        Size_Bytes = df$Size_Bytes,
                        Converted = FALSE,
-                       Dir_Archive =  paste0(path_to_archive_directory, "/", df$Archive, "/", basename(df$File_Name)),
+                       Dir_Archive = file.path(path_to_archive_directory, df$Archive, .fix_umlaut(basename(df$File_Name))),
                        Dir_Origin = df$File_Name
   )
 

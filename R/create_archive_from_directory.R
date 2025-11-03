@@ -72,6 +72,12 @@ create_archive_from_directory <- function(path_to_working_directory,
   }
 
   subfolders <- gsub(path_to_working_directory, path_to_archive_directory, subdirs)
+
+  # fix Umlaute in folder names - but only those that are to be copied. The rest needs to remain identical.
+  subfolders_fixed <- .fix_umlaut(gsub(path_to_archive_directory, "", subfolders))
+  subfolders <- paste0(path_to_archive_directory, subfolders_fixed)
+
+  # create folders with fixed names (Umlaute)
   invisible(lapply(subfolders, dir.create, recursive = TRUE, showWarnings = FALSE))
 
 
@@ -86,7 +92,7 @@ create_archive_from_directory <- function(path_to_working_directory,
   ))
 
   # move files to respective archive folder
-  df$File_Name_Archive <- gsub(path_to_working_directory, path_to_archive_directory, df$File_Name)
+  df$File_Name_Archive <- gsub(path_to_working_directory, path_to_archive_directory, .fix_umlaut(df$File_Name))
   invisible(mapply(file.copy,
                    from = df$File_Name,
                    to   = df$File_Name_Archive,

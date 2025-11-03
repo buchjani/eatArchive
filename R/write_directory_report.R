@@ -102,3 +102,16 @@ write_directory_report <- function(dir,
   openxlsx::saveWorkbook(wb, path_to_directory_report, overwrite = TRUE)
   invisible(path_to_directory_report)
 }
+
+# # Check:
+# write_directory_report(
+#   dir = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner",
+#   path_to_directory_report = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner_Uebersicht.xlsx",
+#   exclude_folders = c("_Archive", "_Archiv"),
+#   autocomplete_values = c(
+#     "Begleitmaterialien LZA-konform/EWE_und_Genehmigungsschreiben",
+#     "Datensaetze/bereitgestellt/SPSS",
+#     "Datensaetze/Original/LZA-konform",
+#     "Syntaxen der bereitgestellten Datensaetze",
+#     "zentrale Dokumente")
+# )

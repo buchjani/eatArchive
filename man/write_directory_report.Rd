@@ -8,7 +8,8 @@ write_directory_report(
   dir,
   path_to_directory_report,
   exclude_folders = "_Archive",
-  autocomplete_values = NA
+  autocomplete_values = NA,
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ autocomplete values are to be provided:
 \item If a character vector is provided, a column "Archive" is included and autocomplete and filtering in Excel is
 enabled, making it easier to assign target folders for file archiving.
 }}
+
+\item{overwrite}{Logical, indicating whether to overwrite existing report.}
 }
 \value{
 Invisibly returns the path to the written Excel file.

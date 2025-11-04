@@ -26,8 +26,8 @@ create_archive_from_directory <- function(path_to_working_directory,
                                           overwrite = FALSE,
                                           csv = "csv"){
 
-  # Check if there's a report
-  stopifnot(file.exists(path_to_directory_report))
+  # Check if directory to copy exists
+  stopifnot(dir.exists(path_to_working_directory))
 
   # Check if archive folder can be created
   if(dir.exists(path_to_archive_directory) & overwrite == FALSE){

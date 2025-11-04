@@ -6,10 +6,11 @@
 #'   - xlsx --> csv: each sheet of an excel file is converted to a csv file
 #'   - xlsm --> csv: each sheet of an excel macro file is converted to a csv file
 #'   - sav  --> csv: SPSS data files are converted to two csv files each (data, metadata)
+#'   - eml  --> txt: Thunderbird email objects (eml-files) are converted to txt-files
 #'   - docx --> txt: word files are converted to txt files
 #'   - doc --> txt: word files are converted to txt files
-#' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
 #' @param overwrite Logical, indicating whether to overwrite existing files in archival directory.
+#' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
 #' @param csv Character specifying the csv type
 #'  - "csv" uses "." for the decimal point and "," for the separator
 #'  - "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
@@ -88,7 +89,7 @@ create_archive_from_directory <- function(path_to_working_directory,
   invisible(lapply(subfolders, dir.create, recursive = TRUE, showWarnings = FALSE))
 
 
-  # MOVE FILES ----
+  # COPYING FILES ----
 
   # print message
   cat(paste(" Creating Archive...\n",
@@ -195,7 +196,7 @@ create_archive_from_directory <- function(path_to_working_directory,
 
       for (i in 1:nrow(df_sav)){
         csv_names <- .convert_sav_to_csv(sav_path = df_sav$File_Name[i],
-                                         save_to = paste0(path_to_archive_directory, "/", df_sav$Archive[i]),
+                                         save_to = dirname(df_sav$File_Name_Archive[i]),
                                          csv = csv)
         report <- rbind(report,
                         data.frame(
@@ -210,6 +211,27 @@ create_archive_from_directory <- function(path_to_working_directory,
     }
 
     # eml --> txt ----
+
+    df_eml <- df[grep("\\.eml?$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_eml) > 0){
+
+      cat(paste0(" - eml  --> txt (n = ", nrow(df_eml), ")\n"))
+
+      for (i in 1:nrow(df_eml)){
+        txt_name <- .convert_eml_to_txt(eml_path = df_eml$File_Name[i],
+                                        save_to = dirname(df_eml$File_Name_Archive[i]))
+        report <- rbind(report,
+                        data.frame(
+                          File_Name = basename(txt_name),
+                          Last_Modified = as.POSIXct(df_eml$Last_Modified[i]),
+                          Size_Bytes = df_eml$Size_Bytes[i],
+                          Status = "converted",
+                          Dir_Archive = txt_name,
+                          Dir_Origin = df_eml$File_Name[i])
+        )
+      }
+    }
+
     # doc --> pdfa ----
     # doc(x) --> txt ----
 
@@ -253,15 +275,14 @@ create_archive_from_directory <- function(path_to_working_directory,
 
   # invisibly return report
   invisible(report)
-
 }
 
-# ## Check:
-# create_archive_from_directory(
-#   path_to_working_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD",
-#   path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
-#   exclude_folders = c("_Archiv", "1a_Daten", "1b_Dokumentation", "3a_Vertrag"),
-#   convert = TRUE,
-#   overwrite = TRUE,
-#   csv = "csv"
-# )
+## Check:
+create_archive_from_directory(
+  path_to_working_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD",
+  path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
+  exclude_folders = c("_Archiv", "1a_Daten", "1b_Dokumentation", "3a_Vertrag"),
+  convert = TRUE,
+  overwrite = TRUE,
+  csv = "csv"
+)

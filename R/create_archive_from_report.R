@@ -6,6 +6,7 @@
 #'   - xlsx --> csv: each sheet of an excel file is converted to a csv file
 #'   - xlsm --> csv: each sheet of an excel macro file is converted to a csv file
 #'   - sav  --> csv: SPSS data files are converted to two csv files each (data, metadata)
+#'   - eml  --> txt: Thunderbird email objects (eml-files) are converted to txt-files
 #'   - docx --> txt: word files are converted to txt files
 #'   - doc --> txt: word files are converted to txt files
 #' @param overwrite Logical, indicating whether to overwrite existing files in archival directory.
@@ -63,7 +64,7 @@ create_archive_from_report <- function(path_to_directory_report,
   invisible(lapply(subdirs, dir.create, recursive = TRUE, showWarnings = FALSE))
 
 
-  # MOVING FILES ----
+  # COPYING FILES ----
 
   # move files to folder indicated in column "Archive", but fix filename for Umlaute
   cat(paste(" Creating Archive...\n",
@@ -181,6 +182,25 @@ create_archive_from_report <- function(path_to_directory_report,
 
     # eml --> txt ----
 
+    df_eml <- df[grep("\\.eml?$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_eml) > 0){
+
+      cat(paste0(" - eml  --> txt (n = ", nrow(df_eml), ")\n"))
+
+      for (i in 1:nrow(df_eml)){
+        txt_name <- .convert_eml_to_txt(eml_path = df_eml$File_Name[i],
+                                        save_to = paste0(path_to_archive_directory, "/", df_eml$Archive[i]))
+        report <- rbind(report,
+                        data.frame(
+                          File_Name = basename(txt_name),
+                          Last_Modified = as.POSIXct(df_eml$Last_Modified[i]),
+                          Size_Bytes = df_eml$Size_Bytes[i],
+                          Status = "converted",
+                          Dir_Archive = txt_name,
+                          Dir_Origin = df_eml$File_Name[i])
+        )
+      }
+    }
 
     # doc --> pdfa ----
 
@@ -230,11 +250,11 @@ create_archive_from_report <- function(path_to_directory_report,
   invisible(report)
 }
 
-# ## Check
-# create_archive_from_report(
-#   path_to_directory_report = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_Uebersicht.xlsx",
-#   path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
-#   convert = TRUE,
-#   overwrite = TRUE,
-#   csv = "csv"
-# )
+## Check
+create_archive_from_report(
+  path_to_directory_report = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_Uebersicht.xlsx",
+  path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
+  convert = TRUE,
+  overwrite = TRUE,
+  csv = "csv"
+)

@@ -5,6 +5,7 @@
 #' @param convert Logical, indicating whether to convert file formats or not. Current files for conversion are:
 #'   - xlsx --> csv: each sheet of an excel file is converted to a csv file
 #'   - xlsm --> csv: each sheet of an excel macro file is converted to a csv file
+#'   - sav  --> csv: SPSS data files are converted to two csv files each (data, metadata)
 #'   - docx --> txt: word files are converted to txt files
 #'   - doc --> txt: word files are converted to txt files
 #' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
@@ -186,6 +187,28 @@ create_archive_from_directory <- function(path_to_working_directory,
     }
 
     # sav --> csv ----
+
+    df_sav <- df[grep("\\.sav?$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_sav) > 0){
+
+      cat(paste0(" - sav  --> csv (n = ", nrow(df_sav), ")\n"))
+
+      for (i in 1:nrow(df_sav)){
+        csv_names <- .convert_sav_to_csv(sav_path = df_sav$File_Name[i],
+                                         save_to = paste0(path_to_archive_directory, "/", df_sav$Archive[i]),
+                                         csv = csv)
+        report <- rbind(report,
+                        data.frame(
+                          File_Name = basename(csv_names),
+                          Last_Modified = as.POSIXct(df_sav$Last_Modified[i]),
+                          Size_Bytes = df_sav$Size_Bytes[i],
+                          Status = "converted",
+                          Dir_Archive = csv_names,
+                          Dir_Origin = rep(df_sav$File_Name[i], times = length(csv_names)))
+        )
+      }
+    }
+
     # eml --> txt ----
     # doc --> pdfa ----
     # doc(x) --> txt ----
@@ -238,6 +261,6 @@ create_archive_from_directory <- function(path_to_working_directory,
 #   path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
 #   exclude_folders = c("_Archiv", "1a_Daten", "1b_Dokumentation", "3a_Vertrag"),
 #   convert = TRUE,
-#   overwrite = FALSE,
+#   overwrite = TRUE,
 #   csv = "csv"
 # )

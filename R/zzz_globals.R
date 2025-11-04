@@ -4,6 +4,7 @@ utils::globalVariables(c(
   ".get_file_info",
   ".longest_common_path",
   ".fix_umlaut",
+  ".write_csv_utf8_bom",
   ".convert_xlsx_to_csv",
   ".convert_xlsm_to_csv",
   ".convert_docx_to_txt"

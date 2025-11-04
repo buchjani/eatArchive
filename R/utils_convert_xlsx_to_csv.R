@@ -2,18 +2,20 @@
 #'
 #' @param xlsx_path Path to the Excel file.
 #' @param save_to Directory where the CSV files should be written.
-#' @param overwrite Logical, whether to overwrite existing CSV files. Default = FALSE.
+#' @param csv Character specifying the csv type
+#'  - "csv" uses "." for the decimal point and "," for the separator
+#'  - "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
 #'
 #' @return Invisibly returns a character vector of paths to the written CSV files.
 #' @keywords internal
 
 .convert_xlsx_to_csv <- function(xlsx_path,
                                  save_to,
-                                 overwrite = FALSE
-                                 #encoding = "UTF-8"
+                                 csv = "csv"
                                  ) {
 
-  xlsx_path <- tolower(xlsx_path)
+  sep <- ifelse(csv == "csv2", ";", ",")
+  dec <- ifelse(csv == "csv2", ",", ".")
 
   stopifnot(is.character(xlsx_path), length(xlsx_path) == 1)
   if (!file.exists(xlsx_path)) {
@@ -21,7 +23,7 @@
   }
 
   # get sheet names
-  sheet_names <- openxlsx::getSheetNames(xlsx_path)
+  sheet_names <- openxlsx::getSheetNames(tolower(xlsx_path))
 
   # prepare output directory
   if (!dir.exists(save_to)) dir.create(save_to, recursive = TRUE)
@@ -32,41 +34,15 @@
 
   # iterate over sheets
   for (i in seq_along(sheet_names)) {
-    df <- suppressWarnings(openxlsx::read.xlsx(xlsx_path, sheet = sheet_names[i]))
-    .write_csv_utf8_bom(df, out_files[i], sep = ",", overwrite = overwrite)
+    df <- suppressWarnings(openxlsx::read.xlsx(tolower(xlsx_path), sheet = sheet_names[i]))
+    .write_csv_utf8_bom(df, out_files[i], sep = sep, dec = dec)
   }
 
   invisible(out_files)
 }
 
-.write_csv_utf8_bom <- function(df, path, sep = ",", dec = ".", overwrite = FALSE) {
-  if (file.exists(path) && !overwrite) {
-    stop("File exists and overwrite=FALSE: ", path)
-  }
-  # open binary connection
-  con <- file(path, open = "wb")
-  # write BOM
-  writeBin(as.raw(c(0xEF, 0xBB, 0xBF)), con)
-  # now switch the connection to text mode with UTF-8
-  close(con)
-  con <- file(path, open = "a", encoding = "UTF-8")
-
-  # write the table
-  utils::write.table(
-    df, file = con,
-    sep = sep,
-    dec = dec,
-    quote = FALSE,
-    row.names = FALSE,
-    col.names = TRUE,
-    qmethod = "double",
-    na = ""
-  )
-  close(con)
-}
-
-# check
-#.convert_xlsx_to_csv(xlsx_path = "Q:/FDZ/Alle/01_Studien/TIMSS/TIMSS_2019/2_Pruefung/2a_Datenschutz/TIMSS_2019_v4_neueDatenschutzpruefung_mitNW.xlsx",
-#                     save_to = "C:/R/",
-#                     overwrite = TRUE)
+# # check
+# .convert_xlsx_to_csv(xlsx_path = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD/Diverse Dateiformate/Excel-Datei mit Großbuchstaben.XLSX",
+#                     save_to = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
+#                     csv = "csv2")
 

@@ -15,7 +15,8 @@ Config/testthat/edition: 3
 Imports: 
     fs,
     openxlsx,
-    utils
+    utils, 
+    eatGADS
 SystemRequirements: pandoc (>= 2.0); antiword; LibreOffice (soffice)
 URL: https://github.com/buchjani/eatArchive
 BugReports: https://github.com/buchjani/eatArchive/issues

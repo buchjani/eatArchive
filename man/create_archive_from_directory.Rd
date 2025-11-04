@@ -24,6 +24,8 @@ create_archive_from_directory(
 \itemize{
 \item xlsx --> csv: each sheet of an excel file is converted to a csv file
 \item xlsm --> csv: each sheet of an excel macro file is converted to a csv file
+\item sav  --> csv: SPSS data files are converted to two csv files each (data, metadata)
+\item eml  --> txt: Thunderbird email objects (eml-files) are converted to txt-files
 \item docx --> txt: word files are converted to txt files
 \item doc --> txt: word files are converted to txt files
 }}

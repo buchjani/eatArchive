@@ -4,7 +4,7 @@
 \alias{.convert_docx_to_txt}
 \title{Converts Word files (docx and doc) to txt-files}
 \usage{
-.convert_docx_to_txt(docx_path, save_to = dirname(docx_path), overwrite = TRUE)
+.convert_docx_to_txt(docx_path, save_to = dirname(docx_path))
 }
 \arguments{
 \item{save_to}{}

@@ -15,6 +15,7 @@
 #'   - If `NA`, a column "Archive" is included but autocomplete and filtering in Excel will not be available.
 #'   - If a character vector is provided, a column "Archive" is included and autocomplete and filtering in Excel is
 #'     enabled, making it easier to assign target folders for file archiving.
+#' @param overwrite Logical, indicating whether to overwrite existing report.
 #'
 #' @details
 #' The Excel workbook includes:
@@ -52,7 +53,15 @@
 write_directory_report <- function(dir,
                                    path_to_directory_report,
                                    exclude_folders = "_Archive",
-                                   autocomplete_values = NA) {
+                                   autocomplete_values = NA,
+                                   overwrite = FALSE) {
+
+  # Check if report file can be created
+  if(dir.exists(path_to_directory_report) & overwrite == FALSE){
+    stop(paste0("\nThe archive directory you indicated already exists:\n",
+                path_to_directory_report,
+                "\nDelete this folder or set 'overwrite = TRUE'"))
+  }
 
   # Write message in console
   cat(paste0("Scanning base directory: ", "\n", dir, "\n", "\n"))
@@ -81,9 +90,17 @@ write_directory_report <- function(dir,
     folder_name <- basename(normalizePath(folder))
 
     # Print progress
-    cat(paste0("... Folder [", f, "/", length(subfolders), "]: ", basename(folder), "\n"))
+    cat(paste0("- Folder [", f, "/", length(subfolders), "]: ", basename(folder), "\n"))
 
     df <- .get_file_info(dir = folder, recursive = TRUE)
+
+    # Only keep  subdirectories - but without those mentioned in exclude_folders (recursively!)
+    if (!is.null(df) && nrow(df) > 0 && length(exclude_folders) > 0) {
+      parts <- fs::path_split(df$File_Name)
+      keep  <- !vapply(parts, function(x) any(x %in% exclude_folders), logical(1))
+      df    <- df[keep, , drop = FALSE]
+    }
+
     if (!is.null(df) && nrow(df) > 0) {
       sheet_name <- make.names(fs::path_file(folder))
       sheet_name <- ifelse(substr(sheet_name, 1,1)=="X" & substr(fs::path_file(folder), 1, 1) != "X", gsub('^X', '', sheet_name), sheet_name)
@@ -105,13 +122,14 @@ write_directory_report <- function(dir,
 
 # # Check:
 # write_directory_report(
-#   dir = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner",
-#   path_to_directory_report = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner_Uebersicht.xlsx",
+#   dir = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD",
+#   path_to_directory_report = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_Uebersicht.xlsx",
 #   exclude_folders = c("_Archive", "_Archiv"),
 #   autocomplete_values = c(
 #     "Begleitmaterialien LZA-konform/EWE_und_Genehmigungsschreiben",
 #     "Datensaetze/bereitgestellt/SPSS",
 #     "Datensaetze/Original/LZA-konform",
 #     "Syntaxen der bereitgestellten Datensaetze",
-#     "zentrale Dokumente")
+#     "zentrale Dokumente"),
+#   overwrite = TRUE
 # )

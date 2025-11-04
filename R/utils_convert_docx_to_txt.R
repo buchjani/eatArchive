@@ -7,17 +7,12 @@
 #' @keywords internal
 
 .convert_docx_to_txt <- function(docx_path,
-                                save_to = dirname(docx_path),
-                                overwrite = TRUE) {
+                                save_to = dirname(docx_path)) {
 
   f <- docx_path
   is_docx <- grepl("\\.docx$", f, ignore.case = TRUE)
   base    <- tools::file_path_sans_ext(basename(f))
   out     <- file.path(save_to, paste0(base, ".txt"))
-
-  if (file.exists(out) & !overwrite) {
-    stop("File already exists and overwrite = FALSE:\n", out, call. = FALSE)
-  }
 
   has_bin <- function(cmd) nzchar(Sys.which(cmd))
 

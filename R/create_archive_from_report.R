@@ -22,10 +22,21 @@ create_archive_from_report <- function(path_to_directory_report,
                                        overwrite = TRUE,
                                        csv = "csv"){
 
+  # Check if there's a report
   stopifnot(file.exists(path_to_directory_report))
 
+  # Check if archive folder can be created
+  if(dir.exists(path_to_archive_directory) & overwrite == FALSE){
+    stop(paste0("\nThe archive directory you indicated already exists:\n",
+                path_to_archive_directory,
+                "\nDelete this folder or set 'overwrite = TRUE'"))
+  }
+
+  # Define csv type
   sep <- ifelse(csv == "csv2", ";", ",")
   dec <- ifelse(csv == "csv2", ",", ".")
+
+  # READING REPORT (excel) FILE -----
 
   # combine sheets in dataframe
   df <- .combine_excel_sheets(path_to_directory_report)
@@ -50,7 +61,8 @@ create_archive_from_report <- function(path_to_directory_report,
   subdirs <- paste0(path_to_archive_directory, "/", .fix_umlaut(unique(df$Archive)))
   invisible(lapply(subdirs, dir.create, recursive = TRUE, showWarnings = FALSE))
 
-  # MOVING FILES ####
+
+  # MOVING FILES ----
 
   # move files to folder indicated in column "Archive", but fix filename for Umlaute
   cat(paste(" Creating Archive...\n",
@@ -70,12 +82,13 @@ create_archive_from_report <- function(path_to_directory_report,
   report <- data.frame(File_Name = .fix_umlaut(basename(df$File_Name)),
                        Last_Modified = as.POSIXct(df$Last_Modified),
                        Size_Bytes = df$Size_Bytes,
-                       Converted = FALSE,
+                       Status = "original",
                        Dir_Archive = file.path(path_to_archive_directory, df$Archive, .fix_umlaut(basename(df$File_Name))),
                        Dir_Origin = df$File_Name
   )
 
-  # CONVERTING FILES ####
+  # CONVERTING FILES ----
+
   if(convert == TRUE){
 
     cat("\n Converting...\n")
@@ -90,13 +103,13 @@ create_archive_from_report <- function(path_to_directory_report,
       for (i in 1:nrow(df_xlsx)){
         csv_names <- .convert_xlsx_to_csv(xlsx_path = df_xlsx$File_Name[i],
                                           save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i]),
-                                          overwrite = overwrite)
+                                          csv = csv)
         report <- rbind(report,
                         data.frame(
                           File_Name = basename(csv_names),
                           Last_Modified = as.POSIXct(df_xlsx$Last_Modified[i]),
                           Size_Bytes = df_xlsx$Size_Bytes[i],
-                          Converted = TRUE,
+                          Status = "converted",
                           Dir_Archive = csv_names,
                           Dir_Origin = rep(df_xlsx$File_Name[i], times = length(csv_names)))
         )
@@ -114,7 +127,7 @@ create_archive_from_report <- function(path_to_directory_report,
       for (i in 1:nrow(df_xlsm)){
         csv_names <- .convert_xlsm_to_csv(xlsm_path = df_xlsm$File_Name[i],
                                           save_to = paste0(path_to_archive_directory, "/", df_xlsm$Archive[i]),
-                                          overwrite = overwrite)
+                                          csv = csv)
 
         # in case of buggy (corrupted) xlsm-file, csv_names will be empty
         # --> add error message to report
@@ -125,7 +138,7 @@ create_archive_from_report <- function(path_to_directory_report,
                             File_Name = basename(df_xlsm$File_Name[i]),
                             Last_Modified = as.POSIXct(df_xlsm$Last_Modified[i]),
                             Size_Bytes = df_xlsm$Size_Bytes[i],
-                            Converted = "ERROR",
+                            Status = "requires_manual_conversion",
                             Dir_Archive = paste0(path_to_archive_directory, "/", df_xlsm$Archive[i], "/", basename(df_xlsm$File_Name[i])),
                             Dir_Origin = df_xlsm$File_Name[i]))
         } else {
@@ -134,7 +147,7 @@ create_archive_from_report <- function(path_to_directory_report,
                             File_Name = basename(csv_names),
                             Last_Modified = as.POSIXct(df_xlsm$Last_Modified[i]),
                             Size_Bytes = df_xlsm$Size_Bytes[i],
-                            Converted = TRUE,
+                            Status = "converted",
                             Dir_Archive = csv_names,
                             Dir_Origin = rep(df_xlsm$File_Name[i], times = length(csv_names)))
           )
@@ -160,15 +173,14 @@ create_archive_from_report <- function(path_to_directory_report,
 
       for (i in 1:nrow(df_docx)){
         txt_name <- .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
-                                         save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i]),
-                                         overwrite = overwrite
+                                         save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i])
         )
         report <- rbind(report,
                         data.frame(
                           File_Name = basename(txt_name),
                           Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
                           Size_Bytes = df_docx$Size_Bytes[i],
-                          Converted = TRUE,
+                          Status = "converted",
                           Dir_Archive = txt_name,
                           Dir_Origin = rep(df_docx$File_Name[i], times = length(txt_name)))
         )
@@ -198,8 +210,9 @@ create_archive_from_report <- function(path_to_directory_report,
 
 # ## Check
 # create_archive_from_report(
-#   path_to_directory_report = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner_Uebersicht.xlsx",
-#   path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251103_Demo/Beispielordner_AIP",
+#   path_to_directory_report = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_Uebersicht.xlsx",
+#   path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
 #   convert = TRUE,
-#   overwrite = TRUE
+#   overwrite = FALSE,
+#   csv = "csv"
 # )

@@ -238,7 +238,8 @@ create_archive_from_directory <- function(path_to_working_directory,
     # pdf --> pdfa ----
   }
 
-  # write report
+  # WRITE DOCUMENTATION ---------
+
   report <- report[order(report$Dir_Archive),]
   report$Last_Modified <-  format(report$Last_Modified, "%Y-%m-%d %H:%M:%S", tz = "Europe/Berlin")
   row.names(report) <- NULL

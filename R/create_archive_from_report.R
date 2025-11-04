@@ -213,7 +213,8 @@ create_archive_from_report <- function(path_to_directory_report,
 
   }
 
-  # write report
+  # WRITE DOCUMENTATION ---------
+
   report <- report[order(report$Dir_Archive),]
   report$Last_Modified <-  format(report$Last_Modified, "%Y-%m-%d %H:%M:%S", tz = "Europe/Berlin")
   row.names(report) <- NULL

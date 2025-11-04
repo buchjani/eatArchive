@@ -278,11 +278,11 @@ create_archive_from_directory <- function(path_to_working_directory,
 }
 
 ## Check:
-create_archive_from_directory(
-  path_to_working_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD",
-  path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
-  exclude_folders = c("_Archiv", "1a_Daten", "1b_Dokumentation", "3a_Vertrag"),
-  convert = TRUE,
-  overwrite = TRUE,
-  csv = "csv"
-)
+# create_archive_from_directory(
+#   path_to_working_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD",
+#   path_to_archive_directory = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/20251110_Demo/TVD_AIP",
+#   exclude_folders = c("_Archiv", "1a_Daten", "1b_Dokumentation", "3a_Vertrag"),
+#   convert = TRUE,
+#   overwrite = TRUE,
+#   csv = "csv"
+# )

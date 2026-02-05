@@ -58,9 +58,9 @@ write_directory_report <- function(dir,
 
   # Check if report file can be created
   if(dir.exists(path_to_directory_report) & overwrite == FALSE){
-    stop(paste0("\nThe archive directory you indicated already exists:\n",
+    stop(paste0("\nThe file you indicated already exists:\n",
                 path_to_directory_report,
-                "\nDelete this folder or set 'overwrite = TRUE'"))
+                "\nDelete this file or set 'overwrite = TRUE'"))
   }
 
   # Write message in console

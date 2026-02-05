@@ -9,7 +9,8 @@ create_archive_from_report(
   path_to_archive_directory,
   convert = TRUE,
   overwrite = TRUE,
-  csv = "csv"
+  csv = "csv",
+  pdf_flavor = "2b"
 )
 }
 \arguments{

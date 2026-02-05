@@ -26,7 +26,7 @@ create_archive_from_directory <- function(path_to_working_directory,
                                           exclude_folders = "_Archive",
                                           convert = TRUE,
                                           overwrite = FALSE,
-                                          csv = "csv",
+                                          csv = "csv"#,
                                           #pdf_flavor = "2b"
                                           ){
 

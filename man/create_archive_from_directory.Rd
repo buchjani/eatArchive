@@ -10,8 +10,7 @@ create_archive_from_directory(
   exclude_folders = "_Archive",
   convert = TRUE,
   overwrite = FALSE,
-  csv = "csv",
-  pdf_flavor = "2b"
+  csv = "csv"
 )
 }
 \arguments{

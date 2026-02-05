@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_add_sheet_with_style.R
 \name{.add_sheet_with_style}
 \alias{.add_sheet_with_style}
-\title{Format the excel sheet}
+\title{Format an excel sheet}
 \usage{
 .add_sheet_with_style(wb, sheet_name, df, autocomplete_values = NULL)
 }
@@ -16,6 +16,6 @@
 \item{autocomplete_values}{A character vector of values which should be offered as autocomplete.}
 }
 \description{
-Format the excel sheet
+Format an excel sheet
 }
 \keyword{internal}

@@ -145,7 +145,6 @@
   openxlsx::writeData(wb, sheet_name, x = Sys.time(), startRow = 8, startCol = 2)  # date (...)
   openxlsx::writeData(wb, sheet_name, x = sum(df_sel$Size_Bytes, na.rm = T), startRow = 8, startCol = 2)
 
-  openxlsx::addStyle(wb, sheet_name, style = dateStyle, rows = 9, cols = 2, gridExpand = TRUE)
 
   # Table with meta info
   openxlsx::writeData(wb, sheet_name, df_sel, startRow = 11, startCol = 1, headerStyle = headerStyle)
@@ -166,6 +165,8 @@
   openxlsx::addStyle(wb, sheet = sheet_name, cols = 1, rows = 1, style = titleStyle, stack = TRUE)
   openxlsx::addStyle(wb, sheet = sheet_name, cols = 1, rows = 2:9, style = subtitleStyle, stack = TRUE)
   openxlsx::addStyle(wb, sheet_name, style = commastyle, rows = c(5, 6, 8), cols = 2, gridExpand = TRUE)
+
+  openxlsx::addStyle(wb, sheet_name, style = dateStyle, rows = 9, cols = 2, gridExpand = TRUE)
 
   # Set column widths and styles
   openxlsx::setColWidths(wb, sheet = sheet_name, cols = 1, widths = "auto")  # File name

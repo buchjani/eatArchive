@@ -49,7 +49,9 @@ scan_directory <- function(dir,
 
   # Toplevel files (non-recursive)
   toplevel_df <- .get_file_info(dir = dir, recursive = FALSE)
-  overview_df <- data.frame("Folder" = dir, "Size_Bytes" = sum(toplevel_df$Size_Bytes, na.rm = T))
+  overview_df <- data.frame("Folder" = dir,
+                            "N_Files" = nrow(toplevel_df),
+                            "Size_Bytes" = sum(toplevel_df$Size_Bytes, na.rm = T))
 
   # Files in subfolders (one sheet per subfolder)
   subfolders <- fs::dir_ls(dir, type = "directory", recurse = FALSE)
@@ -74,7 +76,9 @@ scan_directory <- function(dir,
     }
     subfolders_df <- rbind(subfolders_df, df)
     overview_df <-  rbind(overview_df,
-                          data.frame("Folder" = folder, "Size_Bytes" = sum(df$Size_Bytes, na.rm = T)))
+                          data.frame("Folder" = folder,
+                                     "N_Files" = nrow(df),
+                                     "Size_Bytes" = sum(df$Size_Bytes, na.rm = T)))
     }
 
   df <- rbind(toplevel_df, subfolders_df)

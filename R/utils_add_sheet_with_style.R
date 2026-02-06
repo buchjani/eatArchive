@@ -104,6 +104,7 @@
   # Set column widths and styles
   openxlsx::setColWidths(wb, sheet = sheet_name, cols = 1, widths = "auto")  # Folder name
   openxlsx::setColWidths(wb, sheet = sheet_name, cols = 2, widths = "auto")  # Total size
+  openxlsx::setColWidths(wb, sheet = sheet_name, cols = 3, widths = "auto")  # Total size
 
   # Draw vertical lines
   openxlsx::addStyle(wb, sheet = sheet_name, cols = 1: ncol(df), rows = 2:(nrow(df)+1), gridExpand = TRUE, stack = TRUE,

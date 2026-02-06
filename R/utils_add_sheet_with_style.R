@@ -123,6 +123,7 @@
 
   ## Prepare data
   df$Last_Modified <- as.POSIXct(df$Last_Modified)
+  show_max <- ifelse(nrow(df) < show_max, nrow(df), show_max)
   df_full <- df
   df_sel <- df[1:show_max, ]
 
@@ -147,15 +148,15 @@
 
 
   # Table with meta info
+  headerStyle <- openxlsx::createStyle(
+    fontSize = 12, fontColour = "#FFFFFF", fgFill = "#B40036", textDecoration = "Bold",
+    halign = "left", valign = "CENTER", border = "TopBottom", borderColour = "#B40036")
   openxlsx::writeData(wb, sheet_name, df_sel, startRow = 11, startCol = 1, headerStyle = headerStyle)
 
 
   ## Define Styles
   titleStyle <- openxlsx::createStyle(fontSize = 16,  fontColour = "#B40036", textDecoration = "Bold", halign = "LEFT")
   subtitleStyle <- openxlsx::createStyle(fontSize = 12, halign = "LEFT", textDecoration = "Bold")
-  headerStyle <- openxlsx::createStyle(
-    fontSize = 12, fontColour = "#FFFFFF", fgFill = "#B40036", textDecoration = "Bold",
-    halign = "left", valign = "CENTER", border = "TopBottom", borderColour = "#B40036")
   dateStyle <- openxlsx::createStyle(numFmt = "yyyy-mm-dd hh:mm:ss")
   commastyle <- openxlsx::createStyle(numFmt = "COMMA")
 
@@ -204,6 +205,7 @@
 
   ## Prepare data
   df$Last_Modified <- as.POSIXct(df$Last_Modified)
+  show_max <- ifelse(nrow(df) < show_max, nrow(df), show_max)
   df_full <- df
   df_sel <- df[1:show_max, ]
 
@@ -227,6 +229,9 @@
   openxlsx::writeData(wb, sheet_name, x = nrow(df_sel), startRow = 8, startCol = 2)
 
   # Table with meta info
+  headerStyle <- openxlsx::createStyle(
+    fontSize = 12, fontColour = "#FFFFFF", fgFill = "#B40036", textDecoration = "Bold",
+    halign = "left", valign = "CENTER", border = "TopBottom", borderColour = "#B40036")
   openxlsx::writeData(wb, sheet_name, df_sel, startRow = 11, startCol = 1, headerStyle = headerStyle)
 
 
@@ -234,9 +239,6 @@
 
   titleStyle <- openxlsx::createStyle(fontSize = 16,  fontColour = "#B40036", textDecoration = "Bold", halign = "LEFT")
   subtitleStyle <- openxlsx::createStyle(fontSize = 12, halign = "LEFT", textDecoration = "Bold")
-  headerStyle <- openxlsx::createStyle(
-    fontSize = 12, fontColour = "#FFFFFF", fgFill = "#B40036", textDecoration = "Bold",
-    halign = "left", valign = "CENTER", border = "TopBottom", borderColour = "#B40036")
   dateStyle <- openxlsx::createStyle(numFmt = "yyyy-mm-dd hh:mm:ss")
   commastyle <- openxlsx::createStyle(numFmt = "COMMA")
 

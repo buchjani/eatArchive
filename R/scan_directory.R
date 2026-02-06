@@ -101,18 +101,8 @@ scan_directory <- function(dir,
   }
 
   # Save the final workbook, write message
-  cat("\nWriting directory report to:\n")
+  cat("\nWriting report to:\n")
   cat(path_to_report)
   openxlsx::saveWorkbook(wb, path_to_report, overwrite = TRUE)
   invisible(path_to_report)
 }
-
-# Check:
-# scan_directory(
-#   dir = "Q:/FDZ/Alle/20_Veranstaltungen",
-#   path_to_report = "Q:/FDZ/Alle/20_Veranstaltungen/Ordner-Bericht-Auswahl.xlsx",
-#   # exclude_folders = c("_Archive", "_Archiv"),
-#   show_what = c("Largest", "SMALLEST", "neWest", "OLDEst"),
-#   show_max = 100,
-#   overwrite = TRUE
-# )

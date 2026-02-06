@@ -90,7 +90,8 @@
 
   # Header
   headerStyle <- openxlsx::createStyle(fontSize = 12, fontColour = "#FFFFFF", halign = "left",
-                                       fgFill = "#B40036", border = "TopBottom", borderColour = "#B40036")
+                                       textDecoration = "Bold", fgFill = "#B40036",
+                                       border = "TopBottom", borderColour = "#B40036")
   openxlsx::addStyle(wb, sheet = sheet_name, cols = 1: ncol(df), rows = 1, style = headerStyle,
                      gridExpand = TRUE, stack = TRUE)
   openxlsx::freezePane(wb, sheet = sheet_name, firstRow = TRUE)
@@ -98,7 +99,7 @@
   # Format column 'Size_Bytes': comma-separated thousands
   commastyle <- openxlsx::createStyle(numFmt = "COMMA")
   openxlsx::addStyle(wb, sheet = sheet_name, style = commastyle,
-                     cols = 2, rows = 2:(nrow(df) + 2), gridExpand = TRUE, stack = TRUE)
+                     cols = 3, rows = 2:(nrow(df) + 2), gridExpand = TRUE, stack = TRUE)
 
   # Set column widths and styles
   openxlsx::setColWidths(wb, sheet = sheet_name, cols = 1, widths = "auto")  # Folder name

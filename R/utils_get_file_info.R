@@ -7,7 +7,7 @@
 
 .get_file_info <- function(dir, recursive = FALSE) {
   # Get all files (not directories)
-  paths <- fs::dir_ls(dir, recurse = recursive, type = "file")
+  paths <- fs::dir_ls(dir, recurse = recursive, type = "file", fail = F)
 
   # Convert to character vector for easier handling
   paths <- as.character(paths)

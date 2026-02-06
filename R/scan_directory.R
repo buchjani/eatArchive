@@ -8,10 +8,10 @@
 #' @param path_to_report Character. Path to the Excel file to be written (e.g., "C:/study/dir_report.xlsx").
 #' @param show_what Character, indicating whehter to sort by size or date.
 #' \itemize{
-#'   \item `biggest` for sorting by file size (large to small)
-#'   \item `smallest` for sorting by file size (small to large)
-#'   \item `newest` for sorting by date of last modification (new to old)
-#'   \item `oldest` for sorting by date of last modification (old to new)
+#'   \item `"largest"` for sorting by file size (large to small)
+#'   \item `"smallest"` for sorting by file size (small to large)
+#'   \item `"newest"` for sorting by date of last modification (new to old)
+#'   \item `"oldest"` for sorting by date of last modification (old to new)
 #' }
 #' @param show_max Numeric, indicating the maximum number of files to include in the report.
 #' @param exclude_folders Character vector. Names of subfolders to exclude from processing.
@@ -30,7 +30,7 @@
 scan_directory <- function(dir,
                            path_to_report,
                            exclude_folders = "",
-                           show_what,
+                           show_what = c("largest", "smallest", "newest", "oldest"),
                            show_max = 1000,
                            overwrite = FALSE) {
 

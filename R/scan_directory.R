@@ -54,7 +54,7 @@ scan_directory <- function(dir,
                             "Size_Bytes" = sum(toplevel_df$Size_Bytes, na.rm = T))
 
   # Files in subfolders (one sheet per subfolder)
-  subfolders <- fs::dir_ls(dir, type = "directory", recurse = FALSE)
+  subfolders <- fs::dir_ls(dir, type = "directory", recurse = FALSE, fail = FALSE)
   subfolders <- subfolders[!fs::path_file(subfolders) %in% exclude_folders]
   subfolders_df <- data.frame()
 

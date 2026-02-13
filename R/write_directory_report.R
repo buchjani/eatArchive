@@ -82,7 +82,7 @@ write_directory_report <- function(dir,
   }
 
   # Files in subfolders (one sheet per subfolder)
-  subfolders <- fs::dir_ls(dir, type = "directory", recurse = FALSE)
+  subfolders <- fs::dir_ls(dir, type = "directory", recurse = FALSE, fail = FALSE)
   subfolders <- subfolders[!fs::path_file(subfolders) %in% exclude_folders]
 
   for (f in 1:length(subfolders)) {

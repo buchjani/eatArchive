@@ -61,7 +61,7 @@ create_archive_from_directory <- function(path_to_working_directory,
   df <- .get_file_info(dir = dir, recursive = FALSE)
 
   # Files in subdirectories - but without those mentioned in exclude_folders (recursively!)
-  subdirs <- fs::dir_ls(dir, type = "directory", recurse = TRUE, all = TRUE)
+  subdirs <- fs::dir_ls(dir, type = "directory", recurse = TRUE, all = TRUE, fail = FALSE)
   parts <- fs::path_split(subdirs)
   keep  <- !vapply(parts, function(x) any(x %in% exclude_folders), logical(1))
   subdirs <- subdirs[keep]

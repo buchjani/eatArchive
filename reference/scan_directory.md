@@ -12,7 +12,7 @@ scan_directory(
   dir,
   path_to_report,
   exclude_folders = "",
-  show_what,
+  show_what = c("largest", "smallest", "newest", "oldest"),
   show_max = 1000,
   overwrite = FALSE
 )
@@ -38,13 +38,13 @@ scan_directory(
 
   Character, indicating whehter to sort by size or date.
 
-  - `biggest` for sorting by file size (large to small)
+  - `"largest"` for sorting by file size (large to small)
 
-  - `smallest` for sorting by file size (small to large)
+  - `"smallest"` for sorting by file size (small to large)
 
-  - `newest` for sorting by date of last modification (new to old)
+  - `"newest"` for sorting by date of last modification (new to old)
 
-  - `oldest` for sorting by date of last modification (old to new)
+  - `"oldest"` for sorting by date of last modification (old to new)
 
 - show_max:
 

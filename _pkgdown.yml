@@ -1,0 +1,8 @@
+url: https://buchjani.github.io/eatArchive/
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [github]

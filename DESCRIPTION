@@ -18,5 +18,5 @@ Imports:
     utils, 
     eatGADS
 SystemRequirements: pandoc (>= 2.0); antiword; LibreOffice (soffice)
-URL: https://github.com/buchjani/eatArchive
+URL: https://github.com/buchjani/eatArchive, https://buchjani.github.io/eatArchive/
 BugReports: https://github.com/buchjani/eatArchive/issues

@@ -6,3 +6,4 @@ navbar:
   structure:
     left: [intro, reference, articles, news]
     right: [github]
+

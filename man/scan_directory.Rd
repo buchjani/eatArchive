@@ -8,7 +8,7 @@ scan_directory(
   dir,
   path_to_report,
   exclude_folders = "",
-  show_what,
+  show_what = c("largest", "smallest", "newest", "oldest"),
   show_max = 1000,
   overwrite = FALSE
 )
@@ -22,10 +22,10 @@ scan_directory(
 
 \item{show_what}{Character, indicating whehter to sort by size or date.
 \itemize{
-\item \code{biggest} for sorting by file size (large to small)
-\item \code{smallest} for sorting by file size (small to large)
-\item \code{newest} for sorting by date of last modification (new to old)
-\item \code{oldest} for sorting by date of last modification (old to new)
+\item \code{"largest"} for sorting by file size (large to small)
+\item \code{"smallest"} for sorting by file size (small to large)
+\item \code{"newest"} for sorting by date of last modification (new to old)
+\item \code{"oldest"} for sorting by date of last modification (old to new)
 }}
 
 \item{show_max}{Numeric, indicating the maximum number of files to include in the report.}

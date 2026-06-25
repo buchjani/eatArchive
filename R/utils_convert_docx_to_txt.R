@@ -7,42 +7,42 @@
 #' @keywords internal
 
 .convert_docx_to_txt <- function(docx_path,
-                                save_to = dirname(docx_path)) {
+                                 save_to = dirname(docx_path)) {
 
-  f <- docx_path
-  is_docx <- grepl("\\.docx$", f, ignore.case = TRUE)
-  base    <- tools::file_path_sans_ext(basename(f))
-  out     <- file.path(save_to, paste0(base, ".txt"))
+  is_docx <- grepl("\\.docx$", docx_path, ignore.case = TRUE)
 
-  has_bin <- function(cmd) nzchar(Sys.which(cmd))
+  out <- file.path(
+    save_to,
+    paste0(tools::file_path_sans_ext(basename(docx_path)), ".txt")
+  )
 
   if (is_docx) {
-    # 1) Preferred: pandoc
-    if (has_bin("pandoc")) {
-      system2("pandoc", c("-s", f, "-t", "plain", "-o", out))
+    if (nzchar(Sys.which("pandoc"))) {
+      system2(
+        "pandoc",
+        c("-s", docx_path, "-t", "plain", "-o", out)
+      )
+    } else if (requireNamespace("readtext", quietly = TRUE)) {
+      txt <- readtext::readtext(docx_path)$text
+      writeLines(txt, out, useBytes = TRUE)
     } else {
-      # 2) Fallback: R-only
-      if (requireNamespace("readtext", quietly = TRUE)) {
-        txt <- readtext::readtext(f)$text
-        writeLines(txt, out, useBytes = TRUE)
-      } else {
-        stop("For converting .docx files, please install either 'pandoc' or one of these R packages: 'readtext', 'textreadr'.")
-      }
+      stop(
+        "Converting .docx-files requires either 'pandoc' or the R package 'readtext'."
+      )
     }
   } else {
-    # .doc
-    if (has_bin("antiword")) {
-      system2("antiword", c("-w", "0", f), stdout = out)
-    } else if (has_bin("soffice")) {
-      system2("soffice", c("--headless", "--convert-to", "txt:Text", "--out", out, f))
-    } else {
-      stop("For converting .doc files, please install 'antiword' or LibreOffice ('soffice').")
-    }
+    txt <- antiword::antiword(docx_path)
+    txt <- iconv(
+      txt,
+      from = "WINDOWS-1252",
+      to = "UTF-8"
+    )
+    writeLines(txt, out)
   }
-  return(out)
+  out
 }
 
 ## Check:
 # .convert_docx_to_txt(
-#   docx_path = "C:/R/.tmpdesktop/Tables2-4 (Automatisch wiederhergestellt).docx",
+#   docx_path = "Q:/FDZ/Alle/01_Studien/DigiFeed/Dokumentation/Infos_Studie/Anonymisierungsprotokoll.doc",
 #   save_to  = "C:/R/.tmpdesktop")

@@ -17,7 +17,8 @@ Imports:
     openxlsx,
     openxlsx2,
     utils, 
-    eatGADS
-SystemRequirements: pandoc (>= 2.0); antiword; LibreOffice (soffice)
+    eatGADS,
+    antiword
+SystemRequirements: pandoc (>= 2.0)
 URL: https://github.com/buchjani/eatArchive, https://buchjani.github.io/eatArchive/
 BugReports: https://github.com/buchjani/eatArchive/issues

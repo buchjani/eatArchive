@@ -9,8 +9,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
-    testthat (>= 3.0.0),
-    readtext
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
     fs,
@@ -18,7 +17,7 @@ Imports:
     openxlsx2,
     utils, 
     eatGADS,
-    antiword
-SystemRequirements: pandoc (>= 2.0)
+    antiword,
+    readtext
 URL: https://github.com/buchjani/eatArchive, https://buchjani.github.io/eatArchive/
 BugReports: https://github.com/buchjani/eatArchive/issues

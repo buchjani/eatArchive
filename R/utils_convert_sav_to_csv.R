@@ -16,7 +16,7 @@
 
   f <- sav_path
   base    <- tools::file_path_sans_ext(basename(f))
-  df_GADS <- eatGADS::import_spss(f, labeledStrings = "keep")
+  df_GADS <- suppressMessages(eatGADS::import_spss(f, labeledStrings = "keep"))
 
   # files to write
   outfiles <- c(file.path(save_to, paste0(base, "_meta.csv")),

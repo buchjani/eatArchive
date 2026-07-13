@@ -4,10 +4,17 @@
 \alias{.write_csv_utf8_bom}
 \title{Write a csv file with an encoding that preserves Umlaute (BOM)}
 \usage{
-.write_csv_utf8_bom(df, path, sep = ",", dec = ".", overwrite = TRUE)
+.write_csv_utf8_bom(
+  df,
+  path,
+  sep = ",",
+  dec = ".",
+  overwrite = TRUE,
+  col.names = TRUE
+)
 }
 \arguments{
-\item{overwrite}{}
+\item{col.names}{}
 }
 \description{
 Write a csv file with an encoding that preserves Umlaute (BOM)

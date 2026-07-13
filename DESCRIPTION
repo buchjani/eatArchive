@@ -18,6 +18,8 @@ Imports:
     utils, 
     eatGADS,
     antiword,
-    readtext
+    readtext,
+    readxl
+SystemRequirements: veraPDF (https://docs.verapdf.org/install/) for PDF/A validation and conversion
 URL: https://github.com/buchjani/eatArchive, https://buchjani.github.io/eatArchive/
 BugReports: https://github.com/buchjani/eatArchive/issues

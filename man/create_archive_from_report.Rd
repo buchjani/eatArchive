@@ -9,7 +9,8 @@ create_archive_from_report(
   path_to_archive_directory,
   convert = TRUE,
   overwrite = TRUE,
-  csv = "csv"
+  csv = "csv",
+  pdf_flavor = "2b"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ create_archive_from_report(
 \item "csv" uses "." for the decimal point and "," for the separator
 \item "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
 }}
+
+\item{pdf_flavor}{Character, indicating the particular flavor of PDF files to be created (e.g., "2b")}
 }
 \value{
 Folder and documentation of all files that have been copied.

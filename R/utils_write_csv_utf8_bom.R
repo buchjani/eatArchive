@@ -5,12 +5,13 @@
 #' @param sep
 #' @param dec
 #' @param overwrite
+#' @param col.names
 #'
 #' @returns
 #'
 #' @keywords internal
 
-.write_csv_utf8_bom <- function(df, path, sep = ",", dec = ".", overwrite = TRUE) {
+.write_csv_utf8_bom <- function(df, path, sep = ",", dec = ".", overwrite = TRUE, col.names = TRUE) {
 
   # open binary connection
   con <- file(path, open = "wb")
@@ -27,7 +28,7 @@
     dec = dec,
     quote = FALSE,
     row.names = FALSE,
-    col.names = TRUE,
+    col.names = col.names,
     qmethod = "double",
     na = ""
   )

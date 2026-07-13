@@ -11,7 +11,8 @@ create_archive_from_directory(
   exclude_folders = "_Archive",
   convert = TRUE,
   overwrite = FALSE,
-  csv = "csv"
+  csv = "csv",
+  pdf_flavor = "2b"
 )
 ```
 
@@ -62,6 +63,11 @@ create_archive_from_directory(
 
   - "csv2" uses "," for the decimal point and ";" for the separator, the
     Excel convention for CSV files in some Western European locales.
+
+- pdf_flavor:
+
+  Character, indicating the particular flavor of PDF files to be created
+  (e.g., "2b")
 
 ## Value
 

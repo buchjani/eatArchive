@@ -128,7 +128,6 @@
 # # .check_verapdf_available()
 #
 #
->>>>>>> b4611ca6658a3fb9fc321da879f9547237b7e994
 # .wait_for_file <- function(path, tries = 15L, sleep = 0.2) {
 #   for (i in seq_len(tries)) {
 #     if (file.exists(path)) return(TRUE)

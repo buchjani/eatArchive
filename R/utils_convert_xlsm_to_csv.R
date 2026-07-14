@@ -24,6 +24,7 @@
 
   # get sheet names
   sheet_names <- openxlsx::getSheetNames(tolower(xlsm_path))
+  sheet_names <- gsub('[\\\\/:*?"<>| ]', "_", sheet_names)
 
   # in case of buggy (corrupted) xlsm-file, sheet_names will be empty
   # --> stop with reading the file, add error message to report

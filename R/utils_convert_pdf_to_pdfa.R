@@ -11,8 +11,57 @@
 #' @keywords internal
 
 
+# FIND VERAPDF ---------------------------------------------------------------
 
-### HELPER FUNCTIONS   ----
+.check_verapdf_available <- function() {
+  config_file <- file.path(
+    tools::R_user_dir("eatArchive", "config"),
+    "verapdf_path.txt"
+  )
+
+  # 1) Use the manually configured path
+  if (file.exists(config_file)) {
+    verapdf_path <- readLines(
+      config_file,
+      n = 1L,
+      warn = FALSE
+    )
+
+    if (
+      length(verapdf_path) == 1L &&
+      nzchar(verapdf_path) &&
+      file.exists(verapdf_path)
+    ) {
+      return(verapdf_path)
+    }
+  }
+
+  # 2) Search the system PATH
+  hits <- Sys.which(c(
+    "verapdf",
+    "verapdf.bat",
+    "verapdf.sh"
+  ))
+
+  hits <- unname(hits[nzchar(hits)])
+
+  if (length(hits) > 0L && file.exists(hits[[1L]])) {
+    return(hits[[1L]])
+  }
+
+  # 3) veraPDF is unavailable
+  message(
+    "veraPDF was not found. PDF/A validation and conversion will be skipped.\n",
+    "Install veraPDF from https://verapdf.org/software/.\n",
+    "Already installed? Run eatArchive::set_verapdf() to select its folder."
+  )
+
+  NA_character_
+}
+# .check_verapdf_available
+
+
+# HELPER FUNCTIONS ---------------------------------------------------------------
 #
 # .find_icc <- function() {
 #   icc <- system.file("extdata", "sRGB2014.icc", package = "eatArchive")
@@ -79,6 +128,7 @@
 # # .check_verapdf_available()
 #
 #
+>>>>>>> b4611ca6658a3fb9fc321da879f9547237b7e994
 # .wait_for_file <- function(path, tries = 15L, sleep = 0.2) {
 #   for (i in seq_len(tries)) {
 #     if (file.exists(path)) return(TRUE)

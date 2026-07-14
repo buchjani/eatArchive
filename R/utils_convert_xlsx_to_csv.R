@@ -26,6 +26,7 @@
   # sheet_names <- openxlsx::getSheetNames(tolower(xlsx_path))  # fails when sheet names contain "()"
   wb <- suppressWarnings(openxlsx2::wb_load(xlsx_path))
   sheet_names <- openxlsx2::wb_get_sheet_names(wb)
+  sheet_names <- gsub('[\\\\/:*?"<>| ]', "_", sheet_names)
 
   # prepare output directory
   if (!dir.exists(save_to)) dir.create(save_to, recursive = TRUE)

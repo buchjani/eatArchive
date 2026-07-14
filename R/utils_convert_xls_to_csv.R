@@ -24,6 +24,7 @@
 
   # get sheet names
   sheet_names <- readxl::excel_sheets(xls_path)
+  sheet_names <- gsub('[\\\\/:*?"<>| ]', "_", sheet_names)
 
   # prepare output directory
   if (!dir.exists(save_to)) dir.create(save_to, recursive = TRUE)

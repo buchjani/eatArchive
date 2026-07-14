@@ -37,7 +37,7 @@ create_archive_from_report <- function(path_to_directory_report,
   }
 
   # if PDF conversion is requested, check if veraPDF is installed
-  # verapdf_path <- .check_verapdf_available()
+  verapdf_path <- .check_verapdf_available()
 
 
   # Define csv type
@@ -107,7 +107,7 @@ create_archive_from_report <- function(path_to_directory_report,
     df_xls <- df[grep("\\.xls$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xls) > 0){
 
-      cat(paste0(" - xls --> csv (n = ", nrow(df_xls), ")\n"))
+      cat(paste0(" - xls  --> csv (n = ", nrow(df_xls), ")\n"))
 
       for (i in 1:nrow(df_xls)){
         csv_names <- .convert_xls_to_csv(xls_path = df_xls$File_Name[i],

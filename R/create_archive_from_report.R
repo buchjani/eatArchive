@@ -37,7 +37,7 @@ create_archive_from_report <- function(path_to_directory_report,
   }
 
   # if PDF conversion is requested, check if veraPDF is installed
-  verapdf_path <- .check_verapdf_available()
+  # verapdf_path <- .check_verapdf_available()
 
 
   # Define csv type

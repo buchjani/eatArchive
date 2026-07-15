@@ -16,7 +16,6 @@ library(badger)
 <!-- `r badge_repostatus("Active")` -->
 `r badge_last_commit("buchjani/eatArchive")`
 `r badge_code_size("buchjani/eatArchive")`
-`r badge_custom("latest addition", "IQB Methods eat-family", "maroon", "https://iqb-research.github.io/IQB-Methods/")`
 `r badge_custom("author experience", "1st R package", "green", "https://www.iqb.hu-berlin.de/institut/staff/?pg=c163")`
 <!-- `r badge_cran_download("eatArchive", "grand-total", "green")` -->
 <!-- badges: end -->

@@ -53,7 +53,7 @@
   message(
     "veraPDF was not found. PDF/A validation and conversion will be skipped.\n",
     "Install veraPDF from https://verapdf.org/software/.\n",
-    "Already installed? Run eatArchive::set_verapdf() to select its folder."
+    "Already installed? Run eatArchive::configure_verapdf() to select its folder."
   )
 
   NA_character_

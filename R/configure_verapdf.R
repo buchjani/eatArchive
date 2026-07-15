@@ -77,4 +77,4 @@ configure_verapdf <- function() {
 
   invisible(TRUE)
 }
-# set_verapdf()
+# configure_verapdf()

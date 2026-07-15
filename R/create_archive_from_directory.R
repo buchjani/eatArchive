@@ -368,18 +368,34 @@ create_archive_from_directory <- function(path_to_working_directory,
       cat(paste0(" - docx --> txt (n = ", nrow(df_docx), ")\n"))
 
       for (i in 1:nrow(df_docx)){
-        txt_name <- .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
-                                         save_to = dirname(df_docx$File_Name_Archive[i])
-        )
-        report <- rbind(report,
-                        data.frame(
-                          File_Name = basename(txt_name),
-                          Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
-                          Size_Bytes = df_docx$Size_Bytes[i],
-                          Status = "converted",
-                          Dir_Archive = txt_name,
-                          Dir_Origin = rep(df_docx$File_Name[i], times = length(txt_name)))
-        )
+        txt_name <- tryCatch(
+          txt_name <- .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
+                                           save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i])
+          ),
+          error = function(e) character(0))
+
+        # in case of conversion problem, txt_name will be empty
+        # --> add error message to report
+
+        if (length(txt_name) == 1) {    # conversion successful
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(txt_name),
+                            Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
+                            Size_Bytes = df_docx$Size_Bytes[i],
+                            Status = "converted",
+                            Dir_Archive = txt_name,
+                            Dir_Origin = df_docx$File_Name[i]))
+        } else {                         # conversion problem
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(txt_name),
+                            Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
+                            Size_Bytes = df_docx$Size_Bytes[i],
+                            Status = "requires_manual_conversion",
+                            Dir_Archive = txt_name,
+                            Dir_Origin = df_docx$File_Name[i]))
+        }
       }
     }
   }

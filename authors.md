@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/buchjani/eatArchive/blob/master/DESCRIPTION)
 
 Buchholz J (2026). *eatArchive: Scan, Document, Copy and Convert
-Contents of a Directory*. R package version 0.0.0.9000,
+Contents of a Directory*. R package version 0.5.0,
 <https://github.com/buchjani/eatArchive>.
 
     @Manual{,
       title = {eatArchive: Scan, Document, Copy and Convert Contents of a Directory},
       author = {Janine Buchholz},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.5.0},
       url = {https://github.com/buchjani/eatArchive},
     }

@@ -37,6 +37,8 @@ major steps:
 
 ## All functions
 
+- [`configure_veraPDF()`](https://buchjani.github.io/eatArchive/reference/configure_veraPDF.md)
+  : Configure the location of veraPDF installation
 - [`create_archive_from_directory()`](https://buchjani.github.io/eatArchive/reference/create_archive_from_directory.md)
   : Create an archival directory of all files in a directory
 - [`create_archive_from_report()`](https://buchjani.github.io/eatArchive/reference/create_archive_from_report.md)

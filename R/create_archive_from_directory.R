@@ -44,7 +44,7 @@ create_archive_from_directory <- function(path_to_working_directory,
   }
 
   # if PDF conversion is requested, check if veraPDF is installed
-  verapdf_path <- .check_verapdf_available()
+  verapdf_path <- .find_veraPDF()
 
   # Define csv type
   sep <- ifelse(csv == "csv2", ";", ",")
@@ -127,78 +127,90 @@ create_archive_from_directory <- function(path_to_working_directory,
   )
 
 
-  # CONVERTING FILES ####
+  # CONVERTING FILES ----
 
   if(convert == TRUE){
 
     cat("\n Converting...\n")
 
-    # # pdf --> pdfa ----
-    #
-    # # check #1: verapdf is installed
-    # verapdf_installed <- ifelse(nzchar(.check_verapdf_available()) > 0, TRUE, FALSE)
-    #
-    # # check #2: are there any PDF files to convert in the first place?
-    # # i.e., are there any files that do not conform the desired flavor (e.g., "2b")
-    # df_pdf_all <- df[grep("\\.pdf?$", df$File_Name, ignore.case = TRUE),]
-    #
-    # if(nrow(df_pdf_all) > 0 & verapdf_installed == TRUE){
-    #   for (p in 1:nrow(df_pdf_all)){
-    #     df_pdf_all$flavor[p] <- .check_pdf_flavor(file = df_pdf_all$File_Name[p],
-    #                                               flavor = pdf_flavor,
-    #                                               verapdf_path = .check_verapdf_available())
-    #   }
-    #   # keep all with "false" flavour for conversion; those with "true" (i.e., correct) flavor are ignored
-    #   df_pdf <- df_pdf_all[df_pdf_all$flavor == FALSE,]
-    # }
-    #
-    # # --> relevant outcome #1:
-    # # there are (any) PDF files, but verapdf is not installed
-    # if(nrow(df_pdf_all) > 0 & verapdf_installed == FALSE){
-    #   cat(paste0(" - pdf  --> pdf/a (n = ", nrow(df_pdf), "): Conversion not possible (veraPDF is not installed).\n"))
-    # }
-    #
-    # # --> relevant outcome #2:
-    # # there are PDF files to convert, and verapdf is installed
-    # if(nrow(df_pdf) > 0 & verapdf_installed == TRUE){
-    #
-    #   cat(paste0(" - pdf  --> pdf/a (n = ", nrow(df_pdf), ")\n"))
-    #
-    #   for (i in 1:nrow(df_pdf)){
-    #
-    #     pdf_name <- .convert_pdf_to_pdfa_two_step(pdf_path = df_pdf$File_Name[i],
-    #                                               save_to = dirname(df_pdf$File_Name_Archive[i]),
-    #                                               pdf_flavor = pdf_flavor)
-    #
-    #     # in case of failed conversion, pdf_name will be NA
-    #     # --> add error message to report
-    #
-    #     # in case of successful conversion:
-    #     if(is.na(pdf_name)){
-    #       report <- rbind(report,
-    #                       data.frame(
-    #                         File_Name = basename(df_pdf$File_Name[i]),
-    #                         Last_Modified = as.POSIXct(df_pdf$Last_Modified[i]),
-    #                         Size_Bytes = df_pdf$Size_Bytes[i],
-    #                         Status = "requires_manual_conversion",
-    #                         Dir_Archive = df_pdf$File_Name_Archive[i],
-    #                         Dir_Origin = df_pdf$File_Name[i]))
-    #       # failed conversion:
-    #     } else {
-    #       report <- rbind(report,
-    #                       data.frame(
-    #                         File_Name = basename(pdf_name),
-    #                         Last_Modified = as.POSIXct(df_pdf$Last_Modified[i]),
-    #                         Size_Bytes = df_pdf$Size_Bytes[i],
-    #                         Status = paste0("converted (PDF/A-", pdf_flavor, ")"),
-    #                         Dir_Archive = pdf_name,
-    #                         Dir_Origin = df_pdf$File_Name[i]))
-    #     }
-    #   }
-    # }
+
+    # pdf --> pdfa ----
+
+    # check #1: are there any PDF files in the first place?
+    df_pdf_all <- df[grep("\\.pdf?$", df$File_Name, ignore.case = TRUE),]
+
+    # check #2: is veraPDF installed?
+    veraPDF_installed <- suppressMessages(ifelse(!is.na(.find_veraPDF()), TRUE, FALSE))
+
+    # --> outcome #A (bad):
+    # there are (any) PDF files, but veraPDF is not installed
+    # action: write a message
+    if(nrow(df_pdf_all) > 0 & veraPDF_installed == FALSE){
+      cat(paste0(" - pdf  --> pdf/a (n = ", nrow(df_pdf), "): Conversion not possible."))
+
+      message(
+        "veraPDF was not found. PDF/A validation and conversion will be skipped.\n",
+        "Install veraPDF from https://verapdf.org/software/ and try again.\n",
+        "Already installed? Run `eatArchive::configure_veraPDF()` to select the folder."
+      )
+    }
+
+    # --> outcome #B (good):
+    # there are PDF files to convert, and veraPDF is installed
+    # action: check pdf flavor to see if conversion is needed
+    if(nrow(df_pdf_all) > 0 & veraPDF_installed == TRUE){
+      for (p in 1:nrow(df_pdf_all)){
+        df_pdf_all$flavor[p] <- .check_pdf_flavor(file = df_pdf_all$File_Name[p],
+                                                  flavor = pdf_flavor,
+                                                  veraPDF_path = .find_veraPDF())
+      }
+      # collect files with "false" flavour --> will be converted; those with "true" (i.e., correct) flavor are ignored
+      df_pdf <- df_pdf_all[df_pdf_all$flavor == FALSE,]
+
+      # check #3:
+      # are there any files that do not conform the desired flavor (e.g., "2b")
+      # action: convert those files
+
+      if(nrow(df_pdf) > 0){
+        cat(paste0(" - pdf  --> pdf/a (n = ", nrow(df_pdf), ")\n"))
+
+        for (i in 1:nrow(df_pdf)){
+
+          pdf_name <- .convert_pdf_to_pdfa(pdf_path = df_pdf$File_Name[i],
+                                           save_to = paste0(path_to_archive_directory, "/", df_pdf$Archive[i]),
+                                           pdf_flavor = pdf_flavor)
+
+          # in case of failed conversion, pdf_name will be NA
+          # --> add error message to report
+
+          # in case of failed conversion:
+          if(is.na(pdf_name)){
+            report <- rbind(report,
+                            data.frame(
+                              File_Name = basename(df_pdf$File_Name[i]),
+                              Last_Modified = as.POSIXct(df_pdf$Last_Modified[i]),
+                              Size_Bytes = df_pdf$Size_Bytes[i],
+                              Status = "requires_manual_conversion",
+                              Dir_Archive = df_pdf$File_Name_Archive[i],
+                              Dir_Origin = df_pdf$File_Name[i]))
+            # in case of successful conversion:
+          } else {
+            report <- rbind(report,
+                            data.frame(
+                              File_Name = basename(pdf_name),
+                              Last_Modified = as.POSIXct(df_pdf$Last_Modified[i]),
+                              Size_Bytes = df_pdf$Size_Bytes[i],
+                              Status = paste0("converted (PDF/A-", pdf_flavor, ")"),
+                              Dir_Archive = pdf_name,
+                              Dir_Origin = df_pdf$File_Name[i]))
+          }
+        }
+      }
+
+    }
 
 
-    # xls --> csv ----
+    ## xls --> csv ----
 
     df_xls <- df[grep("\\.xls$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xls) > 0){
@@ -222,7 +234,7 @@ create_archive_from_directory <- function(path_to_working_directory,
     }
 
 
-    # xlsx --> csv ----
+    ## xlsx --> csv ----
 
     df_xlsx <- df[grep("\\.xlsx$", df$File_Name, ignore.case = TRUE),]
 
@@ -247,7 +259,7 @@ create_archive_from_directory <- function(path_to_working_directory,
     }
 
 
-    # xlsm --> csv ----
+    ## xlsm --> csv ----
 
     df_xlsm <- df[grep("\\.xlsm$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xlsm) > 0){
@@ -285,7 +297,7 @@ create_archive_from_directory <- function(path_to_working_directory,
       }
     }
 
-    # sav --> csv ----
+    ## sav --> csv ----
 
     df_sav <- df[grep("\\.sav?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_sav) > 0){
@@ -326,7 +338,7 @@ create_archive_from_directory <- function(path_to_working_directory,
       }
     }
 
-    # eml --> txt ----
+    ## eml --> txt ----
 
     df_eml <- df[grep("\\.eml?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_eml) > 0){
@@ -348,8 +360,7 @@ create_archive_from_directory <- function(path_to_working_directory,
       }
     }
 
-    # doc(x) --> pdf/a ----
-    # doc(x) --> txt ----
+    ## doc(x) --> txt ----
 
     df_docx <- df[grep("\\.docx?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_docx) > 0){

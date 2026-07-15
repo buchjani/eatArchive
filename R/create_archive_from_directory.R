@@ -369,9 +369,8 @@ create_archive_from_directory <- function(path_to_working_directory,
 
       for (i in 1:nrow(df_docx)){
         txt_name <- tryCatch(
-          txt_name <- .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
-                                           save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i])
-          ),
+          .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
+                               save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i])),
           error = function(e) character(0))
 
         # in case of conversion problem, txt_name will be empty
@@ -389,11 +388,49 @@ create_archive_from_directory <- function(path_to_working_directory,
         } else {                         # conversion problem
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(txt_name),
+                            File_Name = basename(df_docx$File_Name[i]),
                             Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
                             Size_Bytes = df_docx$Size_Bytes[i],
                             Status = "requires_manual_conversion",
                             Dir_Archive = txt_name,
+                            Dir_Origin = df_docx$File_Name[i]))
+        }
+      }
+    }
+
+    ## docx --> zip ----
+
+    df_docx <- df[grep("\\.docx$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_docx) > 0){
+
+      cat(paste0(" - docx --> txt (n = ", nrow(df_docx), ")\n"))
+
+      for (i in 1:nrow(df_docx)){
+        zip_name <- tryCatch(
+          .convert_docx_to_zip(docx_path = df_docx$File_Name[i],
+                               save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i])),
+          error = function(e) character(0))
+
+        # in case of conversion problem, zip_name will be empty
+        # --> add error message to report
+
+        if (length(zip_name) == 1) {    # conversion successful
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(zip_name),
+                            Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
+                            Size_Bytes = df_docx$Size_Bytes[i],
+                            Status = "converted",
+                            Dir_Archive = zip_name,
+                            Dir_Origin = df_docx$File_Name[i]))
+        } else {                         # conversion problem
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(df_docx$File_Name[i]),
+                            Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
+                            Size_Bytes = df_docx$Size_Bytes[i],
+                            Status = "requires_manual_conversion",
+                            Dir_Archive = zip_name,
                             Dir_Origin = df_docx$File_Name[i]))
         }
       }

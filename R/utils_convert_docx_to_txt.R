@@ -7,7 +7,7 @@
 #' @keywords internal
 
 .convert_docx_to_txt <- function(docx_path,
-                                 save_to = dirname(docx_path)) {
+                                 save_to)) {
 
   out <- file.path(
     save_to,

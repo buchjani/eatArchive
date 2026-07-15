@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/buchjani/eatArchive/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/buchjani/eatArchive/blob/v0.5.0/DESCRIPTION)
 
 Buchholz J (2026). *eatArchive: Scan, Document, Copy and Convert
 Contents of a Directory*. R package version 0.5.0,

@@ -5,7 +5,6 @@
 #' @param pdf_flavor
 #'
 #' @returns
-#' @export
 #'
 #' @examples
 #' @keywords internal

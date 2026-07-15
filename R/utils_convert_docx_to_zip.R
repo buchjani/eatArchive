@@ -3,7 +3,6 @@
 #' @param docx_path
 #'
 #' @returns
-#' @export
 #'
 #' @examples
 #' @keywords internal

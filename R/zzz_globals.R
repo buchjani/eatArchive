@@ -7,5 +7,7 @@ utils::globalVariables(c(
   ".write_csv_utf8_bom",
   ".convert_xlsx_to_csv",
   ".convert_xlsm_to_csv",
-  ".convert_docx_to_txt"
+  ".convert_docx_to_txt",
+  ".convert_docx_to_zip",
+  ".convert_pdf_to_pdfa"
 ))

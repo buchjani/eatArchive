@@ -221,7 +221,7 @@ create_archive_from_directory <- function(path_to_working_directory,
         csv_names <- tryCatch(
           .convert_xls_to_csv(xls_path = df_xls$File_Name[i],
                               save_to = paste0(path_to_archive_directory, "/", df_xls$Archive[i]),
-                              csv = csv)),
+                              csv = csv),
         error = function(e) character(0))
 
 # in case of conversion problem, csv_names will be empty

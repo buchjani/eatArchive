@@ -7,7 +7,7 @@
 #' @return Invisibly returns `TRUE` if veraPDF was configured successfully, otherwise `FALSE`.
 #' @export
 
-configure_verapdf <- function() {
+configure_veraPDF <- function() {
   if (!requireNamespace("rstudioapi", quietly = TRUE)) {
     stop(
       "Package 'rstudioapi' is required to select the veraPDF folder.",
@@ -39,7 +39,7 @@ configure_verapdf <- function() {
     ignore.case = TRUE
   )
 
-  # Exclude directories that happen to be named "verapdf"
+  # Exclude directories that happen to be named "veraPDF"
   hits <- hits[file.exists(hits) & !dir.exists(hits)]
 
   if (length(hits) == 0L) {
@@ -77,4 +77,4 @@ configure_verapdf <- function() {
 
   invisible(TRUE)
 }
-# configure_verapdf()
+# configure_veraPDF()

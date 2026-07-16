@@ -17,76 +17,156 @@
                                  save_to,
                                  pdf_flavor = "2b") {
 
-  # minimal input validation
-  if (!file.exists(pdf_path)) stop("Input PDF not found: ", pdf_path, call. = FALSE)
+  if (!file.exists(pdf_path)) {
+    stop("Input PDF not found: ", pdf_path, call. = FALSE)
+  }
 
   icc <- .find_icc()
-  if (!nzchar(icc)) stop("Internal ICC profile not found in installed package.", call. = FALSE)
-
-  gs <- .find_ghostscript()
-  if (!nzchar(gs)) stop("Ghostscript not found.", call. = FALSE)
-
-  veraPDF_path <- .find_veraPDF()
-
-  # output directory
-  if (!dir.exists(save_to)) dir.create(save_to, recursive = TRUE)
-
-  # naming
-  base <- basename(pdf_path)
-  base_converted <- sub("\\.pdf$", "_pdfa.pdf", base, ignore.case = TRUE)
-  base_converted <- .fix_umlaut(base_converted)
-  outfile <- file.path(save_to, base_converted)
-
-  # PDF/A flavor
-  part <- as.integer(substr(pdf_flavor, 1, 1))
-  conf <- substr(pdf_flavor, 2, 2)
-
-  if (conf == "a") {
-    warning(
-      "Target flavor 'PDF/A-", part, "a' requires a tagged (structured) PDF; ",
-      "Ghostscript usually does not create tags. Validate output with veraPDF.",
+  if (!nzchar(icc)) {
+    stop(
+      "Internal ICC profile not found in installed package.",
       call. = FALSE
     )
   }
 
-  # overwrite if exists
-  if (file.exists(outfile)) file.remove(outfile)
+  gs <- .find_ghostscript()
+  if (!nzchar(gs)) {
+    stop("Ghostscript not found.", call. = FALSE)
+  }
 
-  # run Ghostscript once
-  pdf_path_n <- normalizePath(pdf_path, winslash = "/", mustWork = TRUE)
-  out_path_n <- normalizePath(outfile, winslash = "/", mustWork = FALSE)
-  icc_n <- normalizePath(icc, winslash = "/", mustWork = TRUE)
+  veraPDF_path <- .find_veraPDF()
 
-  pdaf_def_tmp <- .write_pdfa_def_pdfmark(icc_n, part = part)
-  pdaf_def_n <- normalizePath(pdaf_def_tmp, winslash = "/", mustWork = TRUE)
+  if (!dir.exists(save_to)) {
+    dir.create(save_to, recursive = TRUE)
+  }
+
+  base <- basename(pdf_path)
+  base_converted <- sub(
+    "\\.pdf$",
+    "_pdfa.pdf",
+    base,
+    ignore.case = TRUE
+  )
+  base_converted <- .fix_umlaut(base_converted)
+  outfile <- file.path(save_to, base_converted)
+
+  part <- as.integer(substr(pdf_flavor, 1L, 1L))
+  conf <- substr(pdf_flavor, 2L, 2L)
+
+  if (conf == "a") {
+    warning(
+      "Target flavor 'PDF/A-", part,
+      "a' requires a tagged (structured) PDF; ",
+      "Ghostscript usually does not create tags. ",
+      "Validate output with veraPDF.",
+      call. = FALSE
+    )
+  }
+
+  if (file.exists(outfile)) {
+    file.remove(outfile)
+  }
+
+  pdf_path_n <- normalizePath(
+    pdf_path,
+    winslash = "/",
+    mustWork = TRUE
+  )
+
+  out_path_n <- normalizePath(
+    outfile,
+    winslash = "/",
+    mustWork = FALSE
+  )
+
+  icc_n <- normalizePath(
+    icc,
+    winslash = "/",
+    mustWork = TRUE
+  )
+
+  pdfa_def_tmp <- .write_pdfa_def_pdfmark(
+    icc_n,
+    part = part
+  )
+
+  on.exit(
+    unlink(pdfa_def_tmp, force = TRUE),
+    add = TRUE
+  )
+
+  pdfa_def_n <- normalizePath(
+    pdfa_def_tmp,
+    winslash = "/",
+    mustWork = TRUE
+  )
 
   args <- c(
     "-dSAFER",
+
+    # PDFA_def.ps opens the ICC profile itself.
+    # Therefore SAFER must explicitly allow reading this file.
+    paste0(
+      "--permit-file-read=",
+      shQuote(icc_n)
+    ),
+
     paste0("-dPDFA=", part),
     "-dPDFACompatibilityPolicy=1",
     "-sDEVICE=pdfwrite",
-    "-dBATCH", "-dNOPAUSE",
+    "-dBATCH",
+    "-dNOPAUSE",
     "-dEmbedAllFonts=true",
     "-dSubsetFonts=true",
-    paste0("-sOutputFile=", shQuote(out_path_n)),
-    "-f", pdaf_def_n, pdf_path_n
+
+    paste0(
+      "-sOutputFile=",
+      shQuote(out_path_n)
+    ),
+
+    "-f",
+    shQuote(pdfa_def_n),
+    shQuote(pdf_path_n)
   )
 
-  suppressWarnings(system2(gs, args = args, stdout = TRUE, stderr = TRUE))
-  unlink(pdaf_def_tmp, force = TRUE)
+  gs_log <- suppressWarnings(
+    system2(
+      gs,
+      args = args,
+      stdout = TRUE,
+      stderr = TRUE
+    )
+  )
 
-  # if no file -> NA
-  if (!file.exists(outfile)) return(NA_character_)
-
-  # validate; if fail, delete and return NA
-  ok <- isTRUE(.check_pdf_flavor(outfile, flavor = pdf_flavor, veraPDF_path = veraPDF_path))
-
-  if (ok) {
-    outfile
-  } else {
-    if (file.exists(outfile)) file.remove(outfile)
-    NA_character_
+  exit_code <- attr(gs_log, "status")
+  if (is.null(exit_code)) {
+    exit_code <- 0L
   }
+
+  # Ghostscript may create a partial or blank PDF before failing.
+  # Delete such output immediately.
+  if (exit_code != 0L || !file.exists(outfile)) {
+    if (file.exists(outfile)) {
+      file.remove(outfile)
+    }
+
+    return(NA_character_)
+  }
+
+  ok <- isTRUE(
+    .check_pdf_flavor(
+      outfile,
+      flavor = pdf_flavor,
+      veraPDF_path = veraPDF_path
+    )
+  )
+
+  if (!ok) {
+    file.remove(outfile)
+    return(NA_character_)
+  }
+
+  outfile
 }
 
 
@@ -99,6 +179,15 @@
 #                   "1b",
 #                   .find_veraPDF())
 
+## Test:
+# outfile <- .convert_pdf_to_pdfa(
+#   pdf_path = "Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/Beispieldateien/PDF_mit Formatierung.pdf",
+#   save_to = "C:/R/PDF",
+#   pdf_flavor = "2b")
+# .check_pdf_flavor(outfile,
+#                   "2b",
+#                   .find_veraPDF())
+#
 
 
 # HELPER FUNCTIONS ---------------------------------------------------------------
@@ -163,14 +252,22 @@
 # This is a function for creating a temporary ghostscript file, including the actual paths.
 # A "permanent" .ps-file didn't (always) produce the correct outcome
 .write_pdfa_def_pdfmark <- function(icc_path, part = 2L) {
-  icc_path <- normalizePath(icc_path, winslash = "/", mustWork = FALSE)
-  part <- as.integer(part)
+  icc_path <- normalizePath(
+    icc_path,
+    winslash = "/",
+    mustWork = TRUE
+  )
 
-  s_key <- paste0("/GTS_PDFA", part)
+  # Escape parentheses for PostScript strings
+  icc_path <- gsub(
+    "([()])",
+    "\\\\\\1",
+    icc_path
+  )
 
   lines <- c(
     "%!",
-    "% PDF/A pdfmark definition (generated by R)",
+    "% PDF/A pdfmark definition generated by R",
     sprintf("/ICCProfile (%s) def", icc_path),
     "",
     "% Define ICC profile stream",
@@ -180,8 +277,13 @@
     "",
     "% Define OutputIntent dictionary",
     "[ /_objdef {OutputIntent_PDFA} /type /dict /OBJ pdfmark",
-    sprintf("[ {OutputIntent_PDFA} <</Type /OutputIntent /S %s /DestOutputProfile {icc_PDFA}", s_key),
-    "  /OutputConditionIdentifier (sRGB IEC61966-2.1)",
+    paste0(
+      "[ {OutputIntent_PDFA} <<",
+      "/Type /OutputIntent ",
+      "/S /GTS_PDFA1 ",
+      "/DestOutputProfile {icc_PDFA}"
+    ),
+    "  /OutputConditionIdentifier (sRGB)",
     "  /Info (sRGB IEC61966-2.1)",
     "  /RegistryName (http://www.color.org)",
     ">> /PUT pdfmark",
@@ -190,9 +292,18 @@
     "[ {Catalog} <</OutputIntents [ {OutputIntent_PDFA} ]>> /PUT pdfmark"
   )
 
-  f <- tempfile("PDFA_def_", fileext = ".ps")
-  writeLines(lines, f, useBytes = TRUE)
-  f
+  file <- tempfile(
+    pattern = "PDFA_def_",
+    fileext = ".ps"
+  )
+
+  writeLines(
+    lines,
+    file,
+    useBytes = TRUE
+  )
+
+  file
 }
 
 

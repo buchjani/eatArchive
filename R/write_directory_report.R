@@ -85,7 +85,7 @@ write_directory_report <- function(dir,
   subfolders <- fs::dir_ls(dir, type = "directory", recurse = FALSE, fail = FALSE)
   subfolders <- subfolders[!fs::path_file(subfolders) %in% exclude_folders]
 
-  for (f in 1:length(subfolders)) {
+  for (f in seq_along(subfolders)) {
     folder <- subfolders[f]
     folder_name <- basename(normalizePath(folder))
 

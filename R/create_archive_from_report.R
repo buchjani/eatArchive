@@ -190,32 +190,34 @@ create_archive_from_report <- function(path_to_directory_report,
           .convert_xls_to_csv(xls_path = df_xls$File_Name[i],
                               save_to = paste0(path_to_archive_directory, "/", df_xls$Archive[i]),
                               csv = csv),
-        error = function(e) character(0))
+          error = function(e) character(0))
 
-# in case of conversion problem, csv_names will be empty
-# --> add error message to report
+        # in case of conversion problem, csv_names will be empty
+        # --> add error message to report
 
-if (length(csv_names) == 1) {   # conversion successful
-  report <- rbind(report,
-                  data.frame(
-                    File_Name = basename(csv_names),
-                    Last_Modified = as.POSIXct(df_xls$Last_Modified[i]),
-                    Size_Bytes = df_xls$Size_Bytes[i],
-                    Status = "converted",
-                    Dir_Archive = csv_names,
-                    Dir_Origin = rep(df_xls$File_Name[i], times = length(csv_names))))
-} else {                        # failed conversion
-  report <- rbind(report,
-                  data.frame(
-                    File_Name = basename(df_xls$File_Name[i]),
-                    Last_Modified = as.POSIXct(df_xls$Last_Modified[i]),
-                    Size_Bytes = df_xls$Size_Bytes[i],
-                    Status = "requires_manual_conversion",
-                    Dir_Archive = paste0(path_to_archive_directory,"/",df_xls$Archive[i],"/",basename(df_xls$File_Name[i])),
-                    Dir_Origin = df_xls$File_Name[i]))
-}
+        if (length(csv_names) > 0) {
+          # conversion successful
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(csv_names),
+                            Last_Modified = as.POSIXct(df_xls$Last_Modified[i]),
+                            Size_Bytes = df_xls$Size_Bytes[i],
+                            Status = "converted",
+                            Dir_Archive = csv_names,
+                            Dir_Origin = rep(df_xls$File_Name[i], times = length(csv_names))))
+        } else {
+          # failed conversion
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(df_xls$File_Name[i]),
+                            Last_Modified = as.POSIXct(df_xls$Last_Modified[i]),
+                            Size_Bytes = df_xls$Size_Bytes[i],
+                            Status = "requires_manual_conversion",
+                            Dir_Archive = paste0(path_to_archive_directory,"/",df_xls$Archive[i],"/",basename(df_xls$File_Name[i])),
+                            Dir_Origin = df_xls$File_Name[i]))
+        }
+      }
     }
-  }
 
 
     ## xlsx --> csv ----
@@ -235,7 +237,8 @@ if (length(csv_names) == 1) {   # conversion successful
         # in case of conversion problem, csv_names will be empty
         # --> add error message to report
 
-        if (length(csv_names) == 1) {   # conversion successful
+        if (length(csv_names) > 0) {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(csv_names),
@@ -244,7 +247,8 @@ if (length(csv_names) == 1) {   # conversion successful
                             Status = "converted",
                             Dir_Archive = csv_names,
                             Dir_Origin = rep(df_xlsx$File_Name[i], times = length(csv_names))))
-        } else {                        # failed conversion
+        } else {
+          # failed conversion
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(df_xlsx$File_Name[i]),
@@ -451,7 +455,7 @@ if (length(csv_names) == 1) {   # conversion successful
         }
       }
     }
-}
+  }
 
   # WRITE DOCUMENTATION ---------
 

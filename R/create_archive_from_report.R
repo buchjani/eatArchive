@@ -102,7 +102,7 @@ create_archive_from_report <- function(path_to_directory_report,
 
     cat("\n Converting...\n")
 
-    # pdf --> pdfa ----
+    ## pdf --> pdfa ----
 
     # check #1: are there any PDF files in the first place?
     df_pdf_all <- df[grep("\\.pdf?$", df$File_Name, ignore.case = TRUE),]
@@ -183,7 +183,7 @@ create_archive_from_report <- function(path_to_directory_report,
     df_xls <- df[grep("\\.xls$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xls) > 0){
 
-      cat(paste0(" - xls  --> csv (n = ", nrow(df_xls), ")\n"))
+      cat(paste0(" - xls  --> csv   (n = ", nrow(df_xls), ")\n"))
 
       for (i in 1:nrow(df_xls)){
         csv_names <- tryCatch(
@@ -223,7 +223,7 @@ if (length(csv_names) == 1) {   # conversion successful
     df_xlsx <- df[grep("\\.xlsx$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xlsx) > 0){
 
-      cat(paste0(" - xlsx --> csv (n = ", nrow(df_xlsx), ")\n"))
+      cat(paste0(" - xlsx --> csv   (n = ", nrow(df_xlsx), ")\n"))
 
       for (i in 1:nrow(df_xlsx)){
         csv_names <- tryCatch(
@@ -263,7 +263,7 @@ if (length(csv_names) == 1) {   # conversion successful
     df_xlsm <- df[grep("\\.xlsm$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_xlsm) > 0){
 
-      cat(paste0(" - xlsm --> csv (n = ", nrow(df_xlsm), ")\n"))
+      cat(paste0(" - xlsm --> csv   (n = ", nrow(df_xlsm), ")\n"))
 
       for (i in 1:nrow(df_xlsm)){
         csv_names <- .convert_xlsm_to_csv(xlsm_path = df_xlsm$File_Name[i],
@@ -301,7 +301,7 @@ if (length(csv_names) == 1) {   # conversion successful
     df_sav <- df[grep("\\.sav?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_sav) > 0){
 
-      cat(paste0(" - sav  --> csv (n = ", nrow(df_sav), ")\n"))
+      cat(paste0(" - sav  --> csv   (n = ", nrow(df_sav), ")\n"))
 
       for (i in 1:nrow(df_sav)) {
 
@@ -342,7 +342,7 @@ if (length(csv_names) == 1) {   # conversion successful
     df_eml <- df[grep("\\.eml?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_eml) > 0){
 
-      cat(paste0(" - eml  --> txt (n = ", nrow(df_eml), ")\n"))
+      cat(paste0(" - eml  --> txt   (n = ", nrow(df_eml), ")\n"))
 
       for (i in 1:nrow(df_eml)){
         txt_name <- tryCatch(
@@ -353,7 +353,7 @@ if (length(csv_names) == 1) {   # conversion successful
         # in case of conversion problem, txt_name will be empty
         # --> add error message to report
 
-        if (length(csv_names) == 1) {   # conversion successful
+        if (length(txt_name) == 1) {   # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(txt_name),
@@ -381,7 +381,7 @@ if (length(csv_names) == 1) {   # conversion successful
     df_docx <- df[grep("\\.docx?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_docx) > 0){
 
-      cat(paste0(" - docx --> txt (n = ", nrow(df_docx), ")\n"))
+      cat(paste0(" - docx --> txt   (n = ", nrow(df_docx), ")\n"))
 
       for (i in 1:nrow(df_docx)){
         txt_name <- tryCatch(
@@ -419,7 +419,7 @@ if (length(csv_names) == 1) {   # conversion successful
     df_docx <- df[grep("\\.docx$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_docx) > 0){
 
-      cat(paste0(" - docx --> txt (n = ", nrow(df_docx), ")\n"))
+      cat(paste0(" - docx --> zip   (n = ", nrow(df_docx), ")\n"))
 
       for (i in 1:nrow(df_docx)){
         zip_name <- tryCatch(
@@ -468,7 +468,7 @@ if (length(csv_names) == 1) {   # conversion successful
 
   # invisibly return report
   invisible(report)
-  }
+}
 
 ## Check
 # create_archive_from_report(

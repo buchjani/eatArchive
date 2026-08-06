@@ -226,7 +226,8 @@ create_archive_from_directory <- function(path_to_working_directory,
         # in case of conversion problem, csv_names will be empty
         # --> add error message to report
 
-        if (length(csv_names) == 1) {   # conversion successful
+        if (length(csv_names) > 0) {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(csv_names),
@@ -235,7 +236,8 @@ create_archive_from_directory <- function(path_to_working_directory,
                             Status = "converted",
                             Dir_Archive = csv_names,
                             Dir_Origin = rep(df_xls$File_Name[i], times = length(csv_names))))
-        } else {                        # failed conversion
+        } else {
+          # failed conversion
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(df_xls$File_Name[i]),
@@ -266,7 +268,8 @@ create_archive_from_directory <- function(path_to_working_directory,
         # in case of conversion problem, csv_names will be empty
         # --> add error message to report
 
-        if (length(csv_names) == 1) {   # conversion successful
+        if (length(csv_names) > 0) {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(csv_names),
@@ -275,7 +278,8 @@ create_archive_from_directory <- function(path_to_working_directory,
                             Status = "converted",
                             Dir_Archive = csv_names,
                             Dir_Origin = rep(df_xlsx$File_Name[i], times = length(csv_names))))
-        } else {                        # failed conversion
+        } else {
+          # failed conversion
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(df_xlsx$File_Name[i]),

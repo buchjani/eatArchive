@@ -145,7 +145,7 @@ create_archive_from_directory <- function(path_to_working_directory,
     # there are (any) PDF files, but veraPDF is not installed
     # action: write a message
     if(nrow(df_pdf_all) > 0 & veraPDF_installed == FALSE){
-      cat(paste0(" - pdf  --> pdf/a (n = ", nrow(df_pdf), "): Conversion not possible."))
+      cat(paste0(" - pdf  --> pdf/a (n = ", nrow(df_pdf_all), "): Conversion not possible."))
 
       message(
         "veraPDF was not found. PDF/A validation and conversion will be skipped.\n",
@@ -186,11 +186,11 @@ create_archive_from_directory <- function(path_to_working_directory,
           if(is.na(pdf_name)){
             report <- rbind(report,
                             data.frame(
-                              File_Name = basename(df_pdf$File_Name[i]),
+                              File_Name = .fix_umlaut(basename(df_pdf$File_Name[i])),
                               Last_Modified = as.POSIXct(df_pdf$Last_Modified[i]),
                               Size_Bytes = df_pdf$Size_Bytes[i],
                               Status = "requires_manual_conversion",
-                              Dir_Archive = df_pdf$File_Name_Archive[i],
+                              Dir_Archive = paste0(path_to_archive_directory,"/",df_pdf$Archive[i],"/",.fix_umlaut(basename(df_pdf$File_Name[i]))),
                               Dir_Origin = df_pdf$File_Name[i]))
             # in case of successful conversion:
           } else {

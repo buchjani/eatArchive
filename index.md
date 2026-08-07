@@ -26,3 +26,5 @@ always refer to the current version when reporting
 
 library(eatArchive)
 ```
+
+> **Version 0.5.1**

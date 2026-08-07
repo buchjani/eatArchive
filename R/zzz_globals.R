@@ -3,6 +3,7 @@
     vers <- as.character(utils::packageVersion(pkgname))
     packageStartupMessage(sprintf("%s %s", pkgname, vers))
   }
+
 }
 
 utils::globalVariables(c(

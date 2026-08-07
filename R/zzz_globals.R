@@ -1,3 +1,9 @@
+.onAttach <- function(libname, pkgname) {
+  cli::cli_text(
+    "{.pkg {pkgname}} {.strong v{utils::packageVersion(pkgname)}}"
+  )
+}
+
 utils::globalVariables(c(
   ".add_sheet_with_style",
   ".combine_excel_sheets",

@@ -1,13 +1,12 @@
 Package: eatArchive
 Title: Scan, Document, Copy and Convert Contents of a Directory
-Version: 0.5.0
+Version: 0.5.1
 Authors@R: 
     person("Janine", "Buchholz", , "janine.buchholz@iqb.hu-berlin.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2534-4603"))
 Description: Provides tools to automate the archiving of directory contents using open, software-agnostic file formats. The package supports scanning nested directories, copying files into a new folder structure, and converting selected formats (e.g., XLSX to CSV, DOCX to PDF/A). Each step is documented in a machine-readable log (CSV), containing source paths, destination paths, and any format conversions applied. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Suggests: 
     rstudioapi,
     testthat (>= 3.0.0)
@@ -24,3 +23,4 @@ Imports:
 SystemRequirements: veraPDF (https://docs.verapdf.org/install/) for PDF/A validation and conversion
 URL: https://github.com/buchjani/eatArchive, https://buchjani.github.io/eatArchive/
 BugReports: https://github.com/buchjani/eatArchive/issues
+Config/roxygen2/version: 8.1.0

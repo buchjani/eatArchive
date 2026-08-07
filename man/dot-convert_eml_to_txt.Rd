@@ -6,9 +6,6 @@
 \usage{
 .convert_eml_to_txt(eml_path, save_to = dirname(eml_path))
 }
-\arguments{
-\item{save_to}{}
-}
 \description{
 Converts Thunderbird email objects (eml-files) to txt-files
 }

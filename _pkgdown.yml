@@ -4,6 +4,27 @@ template:
 
 navbar:
   structure:
-    left: [intro, reference, articles, news]
+    left: [intro, reference, articles]
     right: [github]
+
+reference:
+  - title: Creating an archive
+    desc: |
+      This is the heart of eatArchive: for some (workflow 1) or all files in a directory, create an archival package in which files are converted to open, software-agnostic file formats.
+  - subtitle: Create an archive for a selected set of files in a directory
+    contents:
+      - write_directory_report
+      - create_archive_from_report
+  - subtitle: Create an archive of a whole directory as is
+    contents:
+      - create_archive_from_directory
+  - subtitle: Miscellaneous
+    contents:
+      - configure_veraPDF
+
+  - title: Scan a directory
+    desc: |
+      Generate a report of all files in a directory for an insight into your oldest, newest or largest files.
+    contents:
+      - scan_directory
 

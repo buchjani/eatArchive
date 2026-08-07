@@ -35,35 +35,17 @@ major steps:
 
 # Package index
 
-## Creating an archive
-
-This is the heart of eatArchive: for some (workflow 1) or all files in a
-directory, create an archival package in which files are converted to
-open, software-agnostic file formats.
-
-### Create an archive for a selected set of files in a directory
-
-- [`write_directory_report()`](https://buchjani.github.io/eatArchive/reference/write_directory_report.md)
-  : Create an Excel workbook with metadata for all subfolders of a
-  directory
-- [`create_archive_from_report()`](https://buchjani.github.io/eatArchive/reference/create_archive_from_report.md)
-  : Create an archival directory based on Excel file
-
-### Create an archive of a whole directory as is
-
-- [`create_archive_from_directory()`](https://buchjani.github.io/eatArchive/reference/create_archive_from_directory.md)
-  : Create an archival directory of all files in a directory
-
-### Miscellaneous
+## All functions
 
 - [`configure_veraPDF()`](https://buchjani.github.io/eatArchive/reference/configure_veraPDF.md)
   : Configure the location of veraPDF installation
-
-## Scan a directory
-
-Generate a report of all files in a directory for an insight into your
-oldest, newest or largest files.
-
+- [`create_archive_from_directory()`](https://buchjani.github.io/eatArchive/reference/create_archive_from_directory.md)
+  : Create an archival directory of all files in a directory
+- [`create_archive_from_report()`](https://buchjani.github.io/eatArchive/reference/create_archive_from_report.md)
+  : Create an archival directory based on Excel file
 - [`scan_directory()`](https://buchjani.github.io/eatArchive/reference/scan_directory.md)
   : Search a directory for specific files (date, size)
+- [`write_directory_report()`](https://buchjani.github.io/eatArchive/reference/write_directory_report.md)
+  : Create an Excel workbook with metadata for all subfolders of a
+  directory
 

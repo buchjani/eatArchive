@@ -4,8 +4,13 @@ template:
 
 navbar:
   structure:
-    left: [intro, reference, articles]
-    right: [github]
+    left:
+      - intro
+      - reference
+      - articles
+      - news
+    right:
+      - github
 
 reference:
   - title: Creating an archive

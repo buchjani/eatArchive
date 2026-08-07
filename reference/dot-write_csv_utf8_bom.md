@@ -14,7 +14,3 @@ Write a csv file with an encoding that preserves Umlaute (BOM)
   col.names = TRUE
 )
 ```
-
-## Arguments
-
-- col.names:

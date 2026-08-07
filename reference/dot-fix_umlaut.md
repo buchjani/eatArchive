@@ -8,7 +8,3 @@ Ae/Oe/Ue)
 ``` r
 .fix_umlaut(x)
 ```
-
-## Arguments
-
-- x:

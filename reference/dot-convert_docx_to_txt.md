@@ -7,7 +7,3 @@ Converts Word files (docx and doc) to txt-files
 ``` r
 .convert_docx_to_txt(docx_path, save_to)
 ```
-
-## Arguments
-
-- save_to:

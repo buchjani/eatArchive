@@ -7,7 +7,3 @@ Convert a PDF file to PDF/A file with a particular flavor (e.g. "2b")
 ``` r
 .convert_pdf_to_pdfa(pdf_path, save_to, pdf_flavor = "2b")
 ```
-
-## Arguments
-
-- pdf_flavor:

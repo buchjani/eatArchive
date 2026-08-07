@@ -6,9 +6,6 @@
 \usage{
 .fix_umlaut(x)
 }
-\arguments{
-\item{x}{}
-}
 \description{
 Umlaute in Dateinamen ersetzen (ä→ae, ö→oe, ü→ue, ß→ss; Großbuchstaben: Ae/Oe/Ue)
 }

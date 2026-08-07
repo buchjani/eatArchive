@@ -1,3 +1,10 @@
+.onAttach <- function(libname, pkgname) {
+  if (interactive()) {
+    vers <- as.character(utils::packageVersion(pkgname))
+    packageStartupMessage(sprintf("%s %s", pkgname, vers))
+  }
+}
+
 utils::globalVariables(c(
   ".add_sheet_with_style",
   ".combine_excel_sheets",

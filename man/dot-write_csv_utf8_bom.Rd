@@ -13,9 +13,6 @@
   col.names = TRUE
 )
 }
-\arguments{
-\item{col.names}{}
-}
 \description{
 Write a csv file with an encoding that preserves Umlaute (BOM)
 }

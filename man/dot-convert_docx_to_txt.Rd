@@ -6,9 +6,6 @@
 \usage{
 .convert_docx_to_txt(docx_path, save_to)
 }
-\arguments{
-\item{save_to}{}
-}
 \description{
 Converts Word files (docx and doc) to txt-files
 }

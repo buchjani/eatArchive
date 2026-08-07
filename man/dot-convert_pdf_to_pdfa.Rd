@@ -6,9 +6,6 @@
 \usage{
 .convert_pdf_to_pdfa(pdf_path, save_to, pdf_flavor = "2b")
 }
-\arguments{
-\item{pdf_flavor}{}
-}
 \description{
 Convert a PDF file to PDF/A file with a particular flavor (e.g. "2b")
 }

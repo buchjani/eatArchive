@@ -16,19 +16,13 @@ You can install the development version of eatArchive from Github with
 remotes::install_github("buchjani/eatArchive")
 ```
 
-## Workflow
+## Use eatArchive
 
-This is a schematic representation of the workflow, consisting of three
-major steps:
+You can use eatArchive after loading it from your library. Make sure to
+always refer to the current version when reporting
+[issues](https://github.com/buchjani/eatArchive/issues)
 
-1.  R function
-    [`write_directory_report()`](https://buchjani.github.io/eatArchive/reference/write_directory_report.md)
-    for generating an excel file documenting the contents of a
-    directory  
-2.  selecting files for archive, by specifying their archival
-    subdirectory in the excel file
-3.  R function `create_archive_from report()` for reading the excel
-    file, copying and converting files from the original directory to
-    the archival directory
+``` r
 
-![](./reference/figures/README-workflow.png)
+library(eatArchive)
+```

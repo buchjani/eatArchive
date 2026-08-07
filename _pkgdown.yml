@@ -10,17 +10,14 @@ navbar:
 reference:
   - title: Creating an archive
     desc: |
-      This is the heart of eatArchive: for some (workflow 1) or all files in a directory, create an archival package in which files are converted to open, software-agnostic file formats.
-  - subtitle: Create an archive for a selected set of files in a directory
+      This is the heart of eatArchive: for some (workflow 1) or all (workflow 2) files in a directory, create an archival package in which files are converted to open, software-agnostic file formats.
+  - subtitle: Create an archive for a selected set of files in a directory (workflow 1)
     contents:
       - write_directory_report
       - create_archive_from_report
-  - subtitle: Create an archive of a whole directory as is
+  - subtitle: Create an archive of a whole directory as is (workflow 2)
     contents:
       - create_archive_from_directory
-  - subtitle: Miscellaneous
-    contents:
-      - configure_veraPDF
 
   - title: Scan a directory
     desc: |
@@ -28,3 +25,6 @@ reference:
     contents:
       - scan_directory
 
+  - title: Miscellaneous
+    contents:
+      - configure_veraPDF

@@ -1,7 +1,12 @@
 .onAttach <- function(libname, pkgname) {
-  if (interactive()) {
-    vers <- as.character(utils::packageVersion(pkgname))
-    packageStartupMessage(sprintf("%s %s", pkgname, vers))
+
+  if (isTRUE(getOption("eatArchive.startup", interactive()))) {
+
+    version <- utils::packageVersion(pkgname)
+
+    packageStartupMessage(
+      cli::format_inline("{.pkg {pkgname}} v{version}")
+    )
   }
 
 }

@@ -39,3 +39,5 @@ always refer to the current version when reporting
 ``` r
 library(eatArchive)
 ```
+
+> **Version 0.5.1**

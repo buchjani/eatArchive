@@ -7,3 +7,12 @@ navbar:
     left: [intro, reference, articles, news]
     right: [github]
 
+reference:
+  - title: create
+    contents:
+      - starts_with("create_")
+
+  - title: Analyse
+    contents:
+      - analyse
+      - summary_report

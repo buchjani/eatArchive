@@ -1,8 +1,14 @@
 .onAttach <- function(libname, pkgname) {
+<<<<<<< HEAD
   if (interactive()) {
     vers <- as.character(utils::packageVersion(pkgname))
     packageStartupMessage(sprintf("%s %s", pkgname, vers))
   }
+=======
+  cli::cli_text(
+    "{.pkg {pkgname}} {.strong v{utils::packageVersion(pkgname)}}"
+  )
+>>>>>>> 28ec90c46ac17d6f2bcd13fc5a087e02536e1ce1
 }
 
 utils::globalVariables(c(

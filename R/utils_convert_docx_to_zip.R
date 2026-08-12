@@ -25,5 +25,5 @@
 }
 
 ## Check:
-# .convert_docx_to_zip("Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive-Spielwiese/AIP/1b_Dokumentation/Lehrer_Voranalysen.docx",
-#                      save_to  = "C:/R/.tmpdesktop")
+# .convert_docx_to_zip("Q:/FDZ/Alle/99_MitarbeiterInnen/JB/eatArchive/Beispieldateien/docx_with formating and images.docx",
+#                     save_to  = "C:/R/.tmpdesktop")

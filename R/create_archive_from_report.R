@@ -262,6 +262,45 @@ create_archive_from_report <- function(path_to_directory_report,
     }
 
 
+    ## xlsx --> zip ----
+
+    df_xlsx <- df[grep("\\.xlsx$", df$File_Name, ignore.case = TRUE),]
+    if(nrow(df_xlsx) > 0){
+
+      cat(paste0(" - xlsx --> zip   (n = ", nrow(df_xlsx), ")\n"))
+
+      for (i in 1:nrow(df_xlsx)){
+        zip_name <- tryCatch(
+          .convert_xlsx_to_zip(xlsx_path = df_xlsx$File_Name[i],
+                               save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i])),
+          error = function(e) character(0))
+
+        # in case of conversion problem, zip_name will be empty
+        # --> add error message to report
+
+        if (length(zip_name) == 1) {    # conversion successful
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(zip_name),
+                            Last_Modified = as.POSIXct(df_xlsx$Last_Modified[i]),
+                            Size_Bytes = df_xlsx$Size_Bytes[i],
+                            Status = "converted",
+                            Dir_Archive = zip_name,
+                            Dir_Origin = df_xlsx$File_Name[i]))
+        } else {                         # conversion problem
+          report <- rbind(report,
+                          data.frame(
+                            File_Name = basename(df_xlsx$File_Name[i]),
+                            Last_Modified = as.POSIXct(df_xlsx$Last_Modified[i]),
+                            Size_Bytes = df_xlsx$Size_Bytes[i],
+                            Status = "requires_manual_conversion",
+                            Dir_Archive = zip_name,
+                            Dir_Origin = df_xlsx$File_Name[i]))
+        }
+      }
+    }
+
+
     ## xlsm --> csv ----
 
     df_xlsm <- df[grep("\\.xlsm$", df$File_Name, ignore.case = TRUE),]
@@ -468,7 +507,7 @@ create_archive_from_report <- function(path_to_directory_report,
   # print message
   cat(paste0("\n",
              " Archive hast been created!\n",
-             " Documentation: ", path_to_archive_directory, "/_archive_documentation.csv"))
+             " Documentation: ", path_to_archive_directory, "/_archive_documentation.csv\n\n"))
 
   # invisibly return report
   invisible(report)

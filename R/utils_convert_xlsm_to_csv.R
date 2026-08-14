@@ -35,7 +35,7 @@
 
     # build output paths: one CSV per sheet
     out_files <- file.path(save_to,
-                           paste0(tools::file_path_sans_ext(basename(xlsm_path)), "_", sheet_names, ".csv"))
+                           paste0(tools::file_path_sans_ext(.fix_umlaut(basename(xlsm_path))), "_", .fix_umlaut(sheet_names), ".csv"))
 
     # iterate over sheets
     for (i in seq_along(sheet_names)) {

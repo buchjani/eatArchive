@@ -12,7 +12,7 @@
 
   zip_path <- file.path(
     save_to,
-    paste0(tools::file_path_sans_ext(basename(xlsx_path)), ".zip")
+    paste0(tools::file_path_sans_ext(.fix_umlaut(basename(xlsx_path))), ".zip")
   )
 
   file.copy(xlsx_path, zip_path, overwrite = TRUE)

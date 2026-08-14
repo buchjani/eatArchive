@@ -11,7 +11,7 @@
 
   base <- basename(eml_path)
   base_converted <-  gsub(".eml", ".txt", base)
-  outfile <- file.path(save_to, base_converted)
+  outfile <- file.path(save_to, .fix_umlaut(base_converted))
 
   # save email as text file
   file.copy(from = eml_path,

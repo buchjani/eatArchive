@@ -190,7 +190,7 @@ create_archive_from_directory <- function(path_to_working_directory,
                               Last_Modified = as.POSIXct(df_pdf$Last_Modified[i]),
                               Size_Bytes = df_pdf$Size_Bytes[i],
                               Status = "requires_manual_conversion",
-                              Dir_Archive = paste0(path_to_archive_directory,"/",df_pdf$Archive[i],"/",.fix_umlaut(basename(df_pdf$File_Name[i]))),
+                              Dir_Archive = file.path(path_to_archive_directory, df_pdf$Archive[i], .fix_umlaut(basename(df_pdf$File_Name[i]))),
                               Dir_Origin = df_pdf$File_Name[i]))
             # in case of successful conversion:
           } else {
@@ -240,11 +240,11 @@ create_archive_from_directory <- function(path_to_working_directory,
           # failed conversion
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(df_xls$File_Name[i]),
+                            File_Name = .fix_umlaut(basename(df_xls$File_Name[i])),
                             Last_Modified = as.POSIXct(df_xls$Last_Modified[i]),
                             Size_Bytes = df_xls$Size_Bytes[i],
                             Status = "requires_manual_conversion",
-                            Dir_Archive = paste0(path_to_archive_directory,"/",df_xls$Archive[i],"/",basename(df_xls$File_Name[i])),
+                            Dir_Archive = file.path(path_to_archive_directory, df_xls$Archive[i], .fix_umlaut(basename(df_xls$File_Name[i]))),
                             Dir_Origin = df_xls$File_Name[i]))
         }
       }
@@ -282,11 +282,11 @@ create_archive_from_directory <- function(path_to_working_directory,
           # failed conversion
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(df_xlsx$File_Name[i]),
+                            File_Name = .fix_umlaut(basename(df_xlsx$File_Name[i])),
                             Last_Modified = as.POSIXct(df_xlsx$Last_Modified[i]),
                             Size_Bytes = df_xlsx$Size_Bytes[i],
                             Status = "requires_manual_conversion",
-                            Dir_Archive = paste0(path_to_archive_directory,"/",df_xlsx$Archive[i],"/",basename(df_xlsx$File_Name[i])),
+                            Dir_Archive = file.path(path_to_archive_directory, df_xlsx$Archive[i], .fix_umlaut(basename(df_xlsx$File_Name[i]))),
                             Dir_Origin = df_xlsx$File_Name[i]))
         }
       }
@@ -309,7 +309,8 @@ create_archive_from_directory <- function(path_to_working_directory,
         # in case of conversion problem, zip_name will be empty
         # --> add error message to report
 
-        if (length(zip_name) == 1) {    # conversion successful
+        if (length(zip_name) == 1) {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(zip_name),
@@ -318,14 +319,15 @@ create_archive_from_directory <- function(path_to_working_directory,
                             Status = "converted",
                             Dir_Archive = zip_name,
                             Dir_Origin = df_xlsx$File_Name[i]))
-        } else {                         # conversion problem
+        } else {
+          # conversion problem
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(df_xlsx$File_Name[i]),
+                            File_Name = .fix_umlaut(basename(df_xlsx$File_Name[i])),
                             Last_Modified = as.POSIXct(df_xlsx$Last_Modified[i]),
                             Size_Bytes = df_xlsx$Size_Bytes[i],
                             Status = "requires_manual_conversion",
-                            Dir_Archive = zip_name,
+                            Dir_Archive = file.path(dirname(zip_name), .fix_umlaut(basename(zip_name))),
                             Dir_Origin = df_xlsx$File_Name[i]))
         }
       }
@@ -348,15 +350,17 @@ create_archive_from_directory <- function(path_to_working_directory,
         # --> add error message to report
 
         if(length(csv_names) == 0){
+          # failed conversion
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(df_xlsm$File_Name[i]),
+                            File_Name = .fix_umlaut(basename(df_xlsm$File_Name[i])),
                             Last_Modified = as.POSIXct(df_xlsm$Last_Modified[i]),
                             Size_Bytes = df_xlsm$Size_Bytes[i],
                             Status = "requires_manual_conversion",
-                            Dir_Archive = paste0(path_to_archive_directory, "/", df_xlsm$Archive[i], "/", basename(df_xlsm$File_Name[i])),
+                            Dir_Archive = file.path(path_to_archive_directory, df_xlsm$Archive[i], .fix_umlaut(basename(df_xlsm$File_Name[i]))),
                             Dir_Origin = df_xlsm$File_Name[i]))
         } else {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(csv_names),
@@ -389,15 +393,17 @@ create_archive_from_directory <- function(path_to_working_directory,
         # --> add error message to report
 
         if (length(csv_names) == 0) {
+          # failed conversion
           report <- rbind(
             report,
-            data.frame(File_Name = basename(df_sav$File_Name[i]),
+            data.frame(File_Name = .fix_umlaut(basename(df_sav$File_Name[i])),
                        Last_Modified = as.POSIXct(df_sav$Last_Modified[i]),
                        Size_Bytes = df_sav$Size_Bytes[i],
                        Status = "requires_manual_conversion",
-                       Dir_Archive = paste0(path_to_archive_directory,"/",df_sav$Archive[i],"/",basename(df_sav$File_Name[i])),
+                       Dir_Archive = file.path(path_to_archive_directory, df_sav$Archive[i], .fix_umlaut(basename(df_sav$File_Name[i]))),
                        Dir_Origin = df_sav$File_Name[i]))
         } else {
+          # conversion successful
           report <- rbind(
             report,
             data.frame(File_Name = basename(csv_names),
@@ -413,7 +419,7 @@ create_archive_from_directory <- function(path_to_working_directory,
 
     ## eml --> txt ----
 
-    df_eml <- df[grepl("\\.eml$", df$File_Name, ignore.case = TRUE), names(df), drop=FALSE]
+    df_eml <- df[grep("\\.eml?$", df$File_Name, ignore.case = TRUE),]
     if(nrow(df_eml) > 0){
 
       cat(paste0(" - eml  --> txt   (n = ", nrow(df_eml), ")\n"))
@@ -427,7 +433,8 @@ create_archive_from_directory <- function(path_to_working_directory,
         # in case of conversion problem, txt_name will be empty
         # --> add error message to report
 
-        if (length(txt_name) == 1) {   # conversion successful
+        if (length(txt_name) == 1) {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(txt_name),
@@ -436,14 +443,15 @@ create_archive_from_directory <- function(path_to_working_directory,
                             Status = "converted",
                             Dir_Archive = txt_name,
                             Dir_Origin = df_eml$File_Name[i]))
-        } else {                        # failed conversion
+        } else {
+          # failed conversion
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(df_eml$File_Name[i]),
+                            File_Name = .fix_umlaut(basename(df_eml$File_Name[i])),
                             Last_Modified = as.POSIXct(df_eml$Last_Modified[i]),
                             Size_Bytes = df_eml$Size_Bytes[i],
                             Status = "requires_manual_conversion",
-                            Dir_Archive = paste0(path_to_archive_directory,"/",df_eml$Archive[i],"/",basename(df_eml$File_Name[i])),
+                            Dir_Archive = file.path(path_to_archive_directory, df_eml$Archive[i], .fix_umlaut(basename(df_eml$File_Name[i]))),
                             Dir_Origin = df_eml$File_Name[i]))
         }
       }
@@ -466,7 +474,8 @@ create_archive_from_directory <- function(path_to_working_directory,
         # in case of conversion problem, txt_name will be empty
         # --> add error message to report
 
-        if (length(txt_name) == 1) {    # conversion successful
+        if (length(txt_name) == 1) {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(txt_name),
@@ -475,14 +484,15 @@ create_archive_from_directory <- function(path_to_working_directory,
                             Status = "converted",
                             Dir_Archive = txt_name,
                             Dir_Origin = df_docx$File_Name[i]))
-        } else {                         # conversion problem
+        } else {
+          # conversion problem
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(df_docx$File_Name[i]),
+                            File_Name = .fix_umlaut(basename(df_docx$File_Name[i])),
                             Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
                             Size_Bytes = df_docx$Size_Bytes[i],
                             Status = "requires_manual_conversion",
-                            Dir_Archive = txt_name,
+                            Dir_Archive = file.path(path_to_archive_directory, df_docx$Archive[i], .fix_umlaut(basename(df_docx$File_Name[i]))),
                             Dir_Origin = df_docx$File_Name[i]))
         }
       }
@@ -504,7 +514,8 @@ create_archive_from_directory <- function(path_to_working_directory,
         # in case of conversion problem, zip_name will be empty
         # --> add error message to report
 
-        if (length(zip_name) == 1) {    # conversion successful
+        if (length(zip_name) == 1) {
+          # conversion successful
           report <- rbind(report,
                           data.frame(
                             File_Name = basename(zip_name),
@@ -513,14 +524,15 @@ create_archive_from_directory <- function(path_to_working_directory,
                             Status = "converted",
                             Dir_Archive = zip_name,
                             Dir_Origin = df_docx$File_Name[i]))
-        } else {                         # conversion problem
+        } else {
+          # conversion problem
           report <- rbind(report,
                           data.frame(
-                            File_Name = basename(df_docx$File_Name[i]),
+                            File_Name = .fix_umlaut(basename(df_docx$File_Name[i])),
                             Last_Modified = as.POSIXct(df_docx$Last_Modified[i]),
                             Size_Bytes = df_docx$Size_Bytes[i],
                             Status = "requires_manual_conversion",
-                            Dir_Archive = zip_name,
+                            Dir_Archive = file.path(path_to_archive_directory, df_docx$Archive[i], .fix_umlaut(basename(df_docx$File_Name[i]))),
                             Dir_Origin = df_docx$File_Name[i]))
         }
       }

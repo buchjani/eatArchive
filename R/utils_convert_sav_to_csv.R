@@ -15,7 +15,7 @@
   dec <- ifelse(csv == "csv2", ",", ".")
 
   f <- sav_path
-  base    <- tools::file_path_sans_ext(basename(f))
+  base    <- tools::file_path_sans_ext(.fix_umlaut(basename(f)))
   df_GADS <- suppressMessages(eatGADS::import_spss(f, labeledStrings = "keep"))
 
   # files to write

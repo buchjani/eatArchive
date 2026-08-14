@@ -1,6 +1,11 @@
+# eatArchive 0.6.0
+
+* Coming up soon. Stay tuned! 
+
 # eatArchive 0.5.2
 
-* Stay tuned!
+* Added file conversion from xlsx to zip
+* handled Umlaute and special characters in file names and xls(x) sheet names
 
 # eatArchive 0.5.1
 

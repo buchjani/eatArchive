@@ -11,7 +11,7 @@
 
   out <- file.path(
     save_to,
-    paste0(tools::file_path_sans_ext(basename(docx_path)), ".txt")
+    paste0(tools::file_path_sans_ext(.fix_umlaut(basename(docx_path))), ".txt")
   )
   if (grepl("\\.docx$", docx_path, ignore.case = TRUE)) {   # docx-files
     txt <- readtext::readtext(docx_path)$text

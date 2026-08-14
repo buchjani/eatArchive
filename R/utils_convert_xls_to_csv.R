@@ -32,7 +32,7 @@
   # build output paths: one CSV per sheet
   out_names <- fs::path_sanitize(sheet_names)
   out_files <- file.path(save_to,
-                         paste0(tools::file_path_sans_ext(basename(xls_path)), "_", out_names, ".csv"))
+                         paste0(tools::file_path_sans_ext(.fix_umlaut(basename(xls_path))), "_", .fix_umlaut(out_names), ".csv"))
 
   # iterate over sheets
   for (i in seq_along(sheet_names)) {

@@ -33,18 +33,16 @@ remotes::install_github("buchjani/eatArchive")
 
 ## Use eatArchive
 
-You can use eatArchive after loading it from your library. Make sure to always refer to the current version when reporting [issues](https://github.com/buchjani/eatArchive/issues)
+You can use eatArchive after loading it from your library as follows. Make sure to always refer to the current version number when reporting [issues](https://github.com/buchjani/eatArchive/issues).
 
 ``` r
 library(eatArchive)
 ```
 
+![](./man/figures/loading.png){#id .class width=175px}
+
 ```{r version, echo = FALSE, results = "asis"}
-cat(
-  sprintf(
-    "> **Version %s**\n\n",
-    utils::packageVersion("eatArchive")
-  )
-)
+cat(sprintf(paste0("> eatArchive v", utils::packageVersion("eatArchive"))))
 ```
+
 

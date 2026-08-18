@@ -2,10 +2,14 @@
 
 * Coming up soon. Stay tuned! 
 
+# eatArchive 0.5.3
+
+* handle "()" in xlsx sheet names
+
 # eatArchive 0.5.2
 
 * Added file conversion from xlsx to zip
-* handled Umlaute and special characters in file names and xls(x) sheet names
+* handle Umlaute and special characters in file names and xls(x) sheet names
 
 # eatArchive 0.5.1
 

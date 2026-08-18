@@ -23,23 +23,24 @@
   }
 
   # get sheet names
-  sheet_names <- openxlsx::getSheetNames(tolower(xlsx_path))
-  # wb <- suppressWarnings(openxlsx2::wb_load(xlsx_path))
-  # sheet_names <- openxlsx2::wb_get_sheet_names(wb)
-  # sheet_names <- gsub('[\\\\/:*?"<>| ]', "_", sheet_names)
+  # sheet_names <- openxlsx::getSheetNames(tolower(xlsx_path))  # can't handle "()" in sheet names - sometimes...
+  wb <- suppressWarnings(openxlsx2::wb_load(xlsx_path))
+  sheet_names <- openxlsx2::wb_get_sheet_names(wb)
+  sheet_names_nice <- gsub('[\\\\/:*?"<>| ]', "_", sheet_names)
+  sheet_names_nice <- .fix_umlaut(sheet_names)
 
   # prepare output directory
   if (!dir.exists(save_to)) dir.create(save_to, recursive = TRUE)
 
   # build output paths: one CSV per sheet
-  out_names <- fs::path_sanitize(sheet_names)
+  out_names <- fs::path_sanitize(sheet_names_nice)
   out_files <- file.path(save_to,
-                         paste0(tools::file_path_sans_ext(.fix_umlaut(basename(xlsx_path))), "_", .fix_umlaut(out_names), ".csv"))
+                         paste0(tools::file_path_sans_ext(.fix_umlaut(basename(xlsx_path))), "_", out_names, ".csv"))
 
   # iterate over sheets
   for (i in seq_along(sheet_names)) {
-    df <- suppressWarnings(openxlsx::read.xlsx(tolower(xlsx_path), sheet = sheet_names[i]))
-    # df <- suppressWarnings(openxlsx2::wb_to_df(xlsx_path, sheet = sheet_names[i]))
+    # df <- suppressWarnings(openxlsx::read.xlsx(tolower(xlsx_path), sheet = sheet_names[i]))     # can't handle "()" in sheet names - sometimes...
+    df <- suppressWarnings(openxlsx2::wb_to_df(xlsx_path, sheet = sheet_names[i]))
     .write_csv_utf8_bom(df, out_files[i], sep = sep, dec = dec)
   }
 

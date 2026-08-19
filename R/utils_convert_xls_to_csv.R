@@ -39,7 +39,9 @@
     # df <- suppressWarnings(openxlsx::read.xlsx(tolower(xlsx_path), sheet = sheet_names[i])) # fails when sheet names contain "()"
     # df <- suppressWarnings(openxlsx2::wb_to_df(xlsx_path, sheet = sheet_names[i]))
     df <- suppressMessages(suppressWarnings(readxl::read_xls(xls_path, sheet = sheet_names[i], col_names = FALSE)))
-    .write_csv_utf8_bom(df, out_files[i], sep = sep, dec = dec, col.names = FALSE)
+    if (nrow(df)>0){
+      .write_csv_utf8_bom(df, out_files[i], sep = sep, dec = dec, col.names = FALSE)
+    }
   }
 
   invisible(out_files)

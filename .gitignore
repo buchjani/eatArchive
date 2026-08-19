@@ -6,3 +6,4 @@
 .quarto
 *.pptx
 docs
+.RData

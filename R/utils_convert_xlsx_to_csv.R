@@ -37,11 +37,13 @@
   out_files <- file.path(save_to,
                          paste0(tools::file_path_sans_ext(.fix_umlaut(basename(xlsx_path))), "_", out_names, ".csv"))
 
-  # iterate over sheets
+  # iterate over sheets, save only when sheet contains something
   for (i in seq_along(sheet_names)) {
     # df <- suppressWarnings(openxlsx::read.xlsx(tolower(xlsx_path), sheet = sheet_names[i]))     # can't handle "()" in sheet names - sometimes...
-    df <- suppressWarnings(openxlsx2::wb_to_df(xlsx_path, sheet = sheet_names[i]))
-    .write_csv_utf8_bom(df, out_files[i], sep = sep, dec = dec)
+    df <- suppressMessages(openxlsx2::wb_to_df(xlsx_path, sheet = sheet_names[i]))
+    if (!is.null(df)){
+      .write_csv_utf8_bom(df, out_files[i], sep = sep, dec = dec)
+    }
   }
 
   invisible(out_files)

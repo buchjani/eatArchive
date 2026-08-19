@@ -5,6 +5,7 @@
 # eatArchive 0.5.3
 
 * handle "()" in xlsx sheet names
+* prevents csv-export for empty xls(x)-sheets
 
 # eatArchive 0.5.2
 

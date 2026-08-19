@@ -549,7 +549,7 @@ create_archive_from_directory <- function(path_to_working_directory,
 
   # print message
   cat(paste0("\n",
-             " Archive hast been created!\n",
+             " Archive has been created!\n",
              " Documentation: ", path_to_archive_directory, "/_archive_documentation.csv\n\n"))
 
   # invisibly return report

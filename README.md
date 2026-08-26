@@ -43,4 +43,4 @@ library(eatArchive)
 <img src="./man/figures/loading.png" id="id" class="class"
 width="175" />
 
-> eatArchive v0.5.2
+> eatArchive v0.5.4

@@ -14,6 +14,7 @@
 #'  - "csv" uses "." for the decimal point and "," for the separator
 #'  - "csv2" uses "," for the decimal point and ";" for the separator, the Excel convention for CSV files in some Western European locales.
 #' @param pdf_flavor Character, indicating the particular flavor of PDF files to be created (e.g., "2b")
+#' @param conversion_log Logical, indicating whether to show all files when converting files, including the starting time and elapsed time
 #'
 #' @returns Folder and documentation of all files that have been copied.
 #'
@@ -24,7 +25,8 @@ create_archive_from_report <- function(path_to_directory_report,
                                        convert = TRUE,
                                        overwrite = TRUE,
                                        csv = "csv",
-                                       pdf_flavor = "2b"){
+                                       pdf_flavor = "2b",
+                                       conversion_log = FALSE){
 
   # Check if there's a report
   stopifnot(file.exists(path_to_directory_report))
@@ -77,7 +79,7 @@ create_archive_from_report <- function(path_to_directory_report,
             "- Copying from: ", .longest_common_path(df$File_Name), "\n",
             "- Copying to:   ", path_to_archive_directory, "\n",
             "- Files to copy:", nrow(df), "\n",
-            "- Size (KB):    ", sum(df$Size_Bytes/1000), "\n\n"
+            "- Size (KB):    ", round(sum(df$Size_Bytes/1000), 0), "\n\n"
   ))
 
   invisible(mapply(file.copy,
@@ -141,9 +143,11 @@ create_archive_from_report <- function(path_to_directory_report,
 
       if(nrow(df_pdf) > 0){
         cat(paste0(" - pdf  --> pdf/a (n = ", nrow(df_pdf), ")\n"))
+        t <- Sys.time()
 
         for (i in 1:nrow(df_pdf)){
 
+          t0 <- Sys.time()
           pdf_name <- .convert_pdf_to_pdfa(pdf_path = df_pdf$File_Name[i],
                                            save_to = paste0(path_to_archive_directory, "/", df_pdf$Archive[i]),
                                            pdf_flavor = pdf_flavor)
@@ -172,9 +176,18 @@ create_archive_from_report <- function(path_to_directory_report,
                               Dir_Archive = pdf_name,
                               Dir_Origin = df_pdf$File_Name[i]))
           }
+
+          if(conversion_log){
+            cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_pdf$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+          }
         }
       }
-
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
+      }
     }
 
 
@@ -184,8 +197,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_xls) > 0){
 
       cat(paste0(" - xls  --> csv   (n = ", nrow(df_xls), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_xls)){
+
+        t0 <- Sys.time()
         csv_names <- tryCatch(
           .convert_xls_to_csv(xls_path = df_xls$File_Name[i],
                               save_to = paste0(path_to_archive_directory, "/", df_xls$Archive[i]),
@@ -216,6 +232,16 @@ create_archive_from_report <- function(path_to_directory_report,
                             Dir_Archive = file.path(path_to_archive_directory, df_xls$Archive[i], .fix_umlaut(basename(df_xls$File_Name[i]))),
                             Dir_Origin = df_xls$File_Name[i]))
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_xls$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
 
@@ -226,8 +252,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_xlsx) > 0){
 
       cat(paste0(" - xlsx --> csv   (n = ", nrow(df_xlsx), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_xlsx)){
+
+        t0 <- Sys.time()
         csv_names <- tryCatch(
           .convert_xlsx_to_csv(xlsx_path = df_xlsx$File_Name[i],
                                save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i]),
@@ -258,6 +287,16 @@ create_archive_from_report <- function(path_to_directory_report,
                             Dir_Archive = file.path(path_to_archive_directory, df_xlsx$Archive[i], .fix_umlaut(basename(df_xlsx$File_Name[i]))),
                             Dir_Origin = df_xlsx$File_Name[i]))
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_xlsx$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
 
@@ -268,8 +307,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_xlsx) > 0){
 
       cat(paste0(" - xlsx --> zip   (n = ", nrow(df_xlsx), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_xlsx)){
+
+        t0 <- Sys.time()
         zip_name <- tryCatch(
           .convert_xlsx_to_zip(xlsx_path = df_xlsx$File_Name[i],
                                save_to = paste0(path_to_archive_directory, "/", df_xlsx$Archive[i])),
@@ -299,6 +341,16 @@ create_archive_from_report <- function(path_to_directory_report,
                             Dir_Archive = file.path(dirname(zip_name), .fix_umlaut(basename(zip_name))),
                             Dir_Origin = df_xlsx$File_Name[i]))
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_xlsx$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
 
@@ -309,8 +361,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_xlsm) > 0){
 
       cat(paste0(" - xlsm --> csv   (n = ", nrow(df_xlsm), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_xlsm)){
+
+        t0 <- Sys.time()
         csv_names <- .convert_xlsm_to_csv(xlsm_path = df_xlsm$File_Name[i],
                                           save_to = paste0(path_to_archive_directory, "/", df_xlsm$Archive[i]),
                                           csv = csv)
@@ -340,6 +395,16 @@ create_archive_from_report <- function(path_to_directory_report,
                             Dir_Origin = rep(df_xlsm$File_Name[i], times = length(csv_names)))
           )
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_xlsm$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
 
@@ -349,9 +414,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_sav) > 0){
 
       cat(paste0(" - sav  --> csv   (n = ", nrow(df_sav), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_sav)) {
 
+        t0 <- Sys.time()
         csv_names <- tryCatch(
           .convert_sav_to_csv(sav_path = df_sav$File_Name[i],
                               save_to = paste0(path_to_archive_directory, "/", df_sav$Archive[i]),
@@ -383,6 +450,16 @@ create_archive_from_report <- function(path_to_directory_report,
                        Dir_Origin = rep(df_sav$File_Name[i], times = length(csv_names)))
           )
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_sav$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
 
@@ -392,8 +469,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_eml) > 0){
 
       cat(paste0(" - eml  --> txt   (n = ", nrow(df_eml), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_eml)){
+
+        t0 <- Sys.time()
         txt_name <- tryCatch(
           .convert_eml_to_txt(eml_path = df_eml$File_Name[i],
                               save_to = paste0(path_to_archive_directory, "/", df_eml$Archive[i])),
@@ -423,6 +503,16 @@ create_archive_from_report <- function(path_to_directory_report,
                             Dir_Archive = file.path(path_to_archive_directory, df_eml$Archive[i], .fix_umlaut(basename(df_eml$File_Name[i]))),
                             Dir_Origin = df_eml$File_Name[i]))
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_eml$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
 
@@ -433,8 +523,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_docx) > 0){
 
       cat(paste0(" - docx --> txt   (n = ", nrow(df_docx), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_docx)){
+
+        t0 <- Sys.time()
         txt_name <- tryCatch(
           .convert_docx_to_txt(docx_path = df_docx$File_Name[i],
                                save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i])),
@@ -464,6 +557,16 @@ create_archive_from_report <- function(path_to_directory_report,
                             Dir_Archive = file.path(path_to_archive_directory, df_docx$Archive[i], .fix_umlaut(basename(df_docx$File_Name[i]))),
                             Dir_Origin = df_docx$File_Name[i]))
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+            basename(df_docx$File_Name[i]),
+            " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+            sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
 
@@ -473,8 +576,11 @@ create_archive_from_report <- function(path_to_directory_report,
     if(nrow(df_docx) > 0){
 
       cat(paste0(" - docx --> zip   (n = ", nrow(df_docx), ")\n"))
+      t <- Sys.time()
 
       for (i in 1:nrow(df_docx)){
+
+        t0 <- Sys.time()
         zip_name <- tryCatch(
           .convert_docx_to_zip(docx_path = df_docx$File_Name[i],
                                save_to = paste0(path_to_archive_directory, "/", df_docx$Archive[i])),
@@ -504,6 +610,16 @@ create_archive_from_report <- function(path_to_directory_report,
                             Dir_Archive = file.path(path_to_archive_directory, df_docx$Archive[i], .fix_umlaut(basename(df_docx$File_Name[i]))),
                             Dir_Origin = df_docx$File_Name[i]))
         }
+
+        if(conversion_log){
+          cat("     * [", format(t0, "%H:%M:%S"), "] ",
+              basename(df_docx$File_Name[i]),
+              " [", round(as.numeric(difftime(Sys.time(), t0), units = "secs"), 0), " sec]\n",
+              sep = "")
+        }
+      }
+      if(conversion_log){
+        cat("     * TOTAL: ", round(as.numeric(difftime(Sys.time(), t), units = "secs"), 0), " sec\n")
       }
     }
   }

@@ -10,7 +10,8 @@ create_archive_from_report(
   convert = TRUE,
   overwrite = TRUE,
   csv = "csv",
-  pdf_flavor = "2b"
+  pdf_flavor = "2b",
+  conversion_log = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ create_archive_from_report(
 }}
 
 \item{pdf_flavor}{Character, indicating the particular flavor of PDF files to be created (e.g., "2b")}
+
+\item{conversion_log}{Logical, indicating whether to show all files when converting files, including the starting time and elapsed time}
 }
 \value{
 Folder and documentation of all files that have been copied.

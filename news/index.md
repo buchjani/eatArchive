@@ -4,6 +4,10 @@
 
 - Coming up soon. Stay tuned!
 
+## eatArchive 0.5.4
+
+- impleneted optional log messages in console when converting files
+
 ## eatArchive 0.5.3
 
 - handle “()” in xlsx sheet names

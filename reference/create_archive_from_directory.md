@@ -12,7 +12,8 @@ create_archive_from_directory(
   convert = TRUE,
   overwrite = FALSE,
   csv = "csv",
-  pdf_flavor = "2b"
+  pdf_flavor = "2b",
+  conversion_log = FALSE
 )
 ```
 
@@ -68,6 +69,11 @@ create_archive_from_directory(
 
   Character, indicating the particular flavor of PDF files to be created
   (e.g., "2b")
+
+- conversion_log:
+
+  Logical, indicating whether to show all files when converting files,
+  including the starting time and elapsed time
 
 ## Value
 

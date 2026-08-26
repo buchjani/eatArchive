@@ -29,4 +29,4 @@ library(eatArchive)
 
 ![](./reference/figures/loading.png)
 
-> eatArchive v0.5.2
+> eatArchive v0.5.4
